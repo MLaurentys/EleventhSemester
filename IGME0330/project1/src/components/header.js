@@ -9,7 +9,7 @@ header h1{
 };
 </style>
 <header>
-<h1> The Start Wars Cartographer </h1>
+<h1> The Movies Cartographer </h1>
 <nav class="navbar" role="navigation" aria-label="main navigation">
   <div class="navbar-brand">
     <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="pages-nav">
