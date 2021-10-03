@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<babbleWords>
+  <namelist cid="greek">Alpha,Beta,Gamma,Delta,Epsilon,Zeta,Eta,Theta,Iota,Kappa,Lambda,Mu,Nu,Xi,Omicron,Pi,Rho,Sigma,Tau,Upsilon,Phi,Chi,Psi,Omega</namelist>
+  <namelist cid="runes">FEHU,URUZ,THURISAZ,ANSUZ,RAIDHO,KENNAZ,GEBO,WUNJO,HAGALAZ,NAUTHIZ,ISA,JERA,EIHWAZ,PERTHRO,ALGIZ,SOWILO,TIWAZ,BERKANA,EHWAZ,MANNAZ,LAGUZ,INGUZ,OTHALA,DAGAZ</namelist>
+  <namelist cid="deities">Amunet,Anuket,Bastet,Bat,Hathor,Heqet,Hesat,Imentet,Isis,Maat,Menhit,Mut,Neith,Nekhbet,Nephthys,Nepit,Nut,Pakhet,Renenutet,Satet,Sekhmet,Tefnut,Wadjet,Wosret</namelist>
+</babbleWords>
