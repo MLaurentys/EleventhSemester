@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>igm-footer Component 1</title>
+    <!-- Web Components Polyfill for older browsers -->
+    <script
+      defer
+      src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/2.6.0/webcomponents-loader.min.js"
+    ></script>
+    <style>
+      span {
+        color: green;
+      }
+    </style>
+    <script>
+      // YOUR CODE GOES HERE
+      class IGMFooter extends HTMLElement {
+        constructor() {
+          super();
+          this.attachShadow({ mode: 'open' });
+          this.shadowRoot.appendChild(document.createElement('span'));
+          this.shadowRoot.appendChild(document.createElement('hr'));
+          let style = document.createElement('style');
+          style.textContent = `
+      host{
+        color: #f76902;
+        display:block;
+      }
+      hr{border:2px solid red;}
+      `;
+          this.shadowRoot.appendChild(style);
+        }
+        connectedCallback() {
+          this.render();
+        }
+        render() {
+          const year = this.getAttribute('data-year') ?? '1995';
+          const text = this.getAttribute('data-text') ?? 'Not set';
+          this.shadowRoot.querySelector(
+            'span'
+          ).textContent = `&copy; Copyright ${year} ${text}`;
+        }
+      }
+
+      customElements.define('igm-footer', IGMFooter);
+    </script>
+  </head>
+  <body>
+    <h1>
+      Web Component - with attributes and <code>connectedCallback()</code>
+    </h1>
+    <p>
+      Here we have a new component, <code>&lt;igm-footer></code> that has
+      <code>data-year</code> and <code>data-text</code> attributes
+    </p>
+    <p>
+      We are also utilizing the <code>connectedCallback()</code> lifecycle
+      method, which is invoked each time the custom element is appended into a
+      document-connected element
+    </p>
+    <span>I am a span</span>
+    <h2>1st footer</h2>
+    <igm-footer data-year="2019" data-text="t1"></igm-footer>
+
+    <h2>2nd footer</h2>
+    <igm-footer data-year="2020" data-text="t2"></igm-footer>
+
+    <h2>3rd footer</h2>
+    <igm-footer data-year="2021" data-text="t3"></igm-footer>
+
+    <h2>4th footer</h2>
+    <igm-footer></igm-footer>
+  </body>
+</html>
