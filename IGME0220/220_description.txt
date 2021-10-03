@@ -1,0 +1,13 @@
+THE WAR FOR THE DARK CRYSTAL
+
+The players play as generals in a series of battles in the war for the planet's source of energy.
+
+Card game for 4 to 6 players.
+
+Game in played in rounds, or battles, and turns. Each round 
+
+Each player draws five cards -> Two Aliance Cards, One Unit Card, Two spells cards
+
+First each player plays their unit card, either face up or face down. Then, each player in order, play face-up one aliance card of their choosing. That is the teams for that battle. After the aliances are drawn every face-down unit card is revealed. Now, starting with the first player who played an aliance card, each player can either attack another unit, of any opposing team, or play their spell card.
+
+Each unit has a set of units it can attack, and a synergy/weakness/strong and each spell has a different effect. Only one of the spells can be played. The last aliance to have remaining units wins.
