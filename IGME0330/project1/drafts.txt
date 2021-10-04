@@ -17,3 +17,10 @@ curl --request GET \
   --url 'https://127.0.0.1:5500/IGME0330/project1/search/person/2963?api_key=d71bea95cdca3d4c0002aa72148c6e16' \
   --header 'Content-Type: application/json;charset=utf-8'
 
+curl --request GET \
+   --url 'https://api.themoviedb.org/3/person/2963/movie_credits?api_key=d71bea95cdca3d4c0002aa72148c6e16' \
+   --header 'Content-Type: application/json;charset=utf-8'
+
+curl --request GET \
+   --url 'https://api.themoviedb.org/3/person/65838/movie_credits?api_key=d71bea95cdca3d4c0002aa72148c6e16' \
+   --header 'Content-Type: application/json;charset=utf-8'
