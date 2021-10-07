@@ -1,5 +1,5 @@
 import cytoscape from 'https://cdn.jsdelivr.net/npm/cytoscape@3.19.1/dist/cytoscape.esm.min.js';
-import { API_DATA } from '../../env.js';
+import { API_DATA } from '../env.js';
 import { API_ENDPOINT, IMAGES_ENDPOINT } from '../consts.js';
 
 const nickCage = 'nicolas cage';
@@ -69,7 +69,7 @@ template.innerHTML = `
 
 </div>
 `;
-class SWCApp extends HTMLElement {
+class MDBCApp extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
@@ -171,4 +171,4 @@ class SWCApp extends HTMLElement {
   }
 }
 
-export { SWCApp };
+export { MDBCApp };

@@ -1,17 +1,32 @@
-const template = document.createElement("template");
+const template = document.createElement('template');
 template.innerHTML = `
+<link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css"
+    />
 <style>
-@import "https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css";
-header h1{
+h1{
   font-family: SfDistantGalaxy,sans-serif;
   letter-spacing: 1px;
+  font-size: 2em;
+  display: inline-block;
+}
+.titleRow {
   background-color:green;
-};
+}
+#logo {
+  margin:auto;
+  padding:4%;
+  width:50px;
+}
 </style>
 <header>
-<h1> The Movies Cartographer </h1>
+  <div class="titleRow">
+    <h1> The Movies Cartographer </h1>
+  </div>
 <nav class="navbar" role="navigation" aria-label="main navigation">
   <div class="navbar-brand">
+    <img id="logo" src="../../public/logo.jpg" alt="logo"/>
     <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="pages-nav">
       <span aria-hidden="true"></span>
       <span aria-hidden="true"></span>
@@ -33,16 +48,16 @@ header h1{
 </nav>
 </header>
 `;
-class SWCHeader extends HTMLElement {
+class MDBCHeader extends HTMLElement {
   constructor() {
     super();
-    this.attachShadow({ mode: "open" });
+    this.attachShadow({ mode: 'open' });
     this.shadowRoot.appendChild(template.content.cloneNode(true));
-    this.h1 = this.shadowRoot.querySelector("h1");
-    console.log(`#item-${this.dataset.page}`)
+    this.h1 = this.shadowRoot.querySelector('h1');
+    console.log(`#item-${this.dataset.page}`);
     this.item = this.shadowRoot.querySelector(`#item-${this.dataset.page}`);
     console.log(this.item);
-    this.item.className += " has-text-link has-background-light";
+    this.item.className += ' has-text-link has-background-light';
   }
 
   connectedCallback() {
@@ -56,11 +71,10 @@ class SWCHeader extends HTMLElement {
   }
 
   static get observedAttribute() {
-    return ["data-title"];
+    return ['data-title'];
   }
 
-  render() {
-  }
+  render() {}
 }
 
-export { SWCHeader };
+export { MDBCHeader };
