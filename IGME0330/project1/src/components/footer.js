@@ -9,6 +9,9 @@ template.innerHTML = `
   width:100%;
   padding-bottom:2rem;
 }
+#wrapper {
+  flex: 1;
+}
 </style>
 <div class="footer">
   <div class="content">

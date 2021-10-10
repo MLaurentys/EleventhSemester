@@ -8,44 +8,49 @@ template.innerHTML = `
 h1{
   font-family: SfDistantGalaxy,sans-serif;
   letter-spacing: 1px;
-  font-size: 2em;
+  font-size: 3em;
+  color:snow;
   display: inline-block;
 }
-.titleRow {
-  background-color:green;
+.navbar {
+  background-color:#F8F8F8;
+}
+.title-row {
+  min-height:15vh;
+  background-image: url('../../images/header_sky.jpg');
+  background-position: 50% 50%;
 }
 #logo {
-  margin:auto;
   padding:4%;
-  width:50px;
+  width:100px;
 }
 </style>
 <header>
-  <div class="titleRow">
-    <h1> The Movies Cartographer </h1>
+  <div class="title-row">
+    <h1 class="ml-2 pt-3"> The Movies Cartographer </h1>
   </div>
-<nav class="navbar" role="navigation" aria-label="main navigation">
-  <div class="navbar-brand">
-    <img id="logo" src="../../public/logo.jpg" alt="logo"/>
-    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="pages-nav">
-      <span aria-hidden="true"></span>
-      <span aria-hidden="true"></span>
-      <span aria-hidden="true"></span>
-    </a>
-  </div>
-  <div class="navbar-menu">
-    <div class="navbar-start" id="pages-nav">
-      <a class="navbar-item" id="item-0" href="./about.html"> Home
-      </a>
-      <a class="navbar-item" id="item-1" href="./app.html"> App
-      </a>
-      <a class="navbar-item" id="item-2" href="./favorites.html"> Favorites
-      </a>
-      <a class="navbar-item" id="item-3" href="./sources.html"> Documentation
+  <nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+      <img class="navbar-item" id="logo" src="../../images/logo2.jpg" alt="logo"/>
+      <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="pages">
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
       </a>
     </div>
-  </div>
-</nav>
+    <div class="navbar-menu" id="pages">
+      <div class="navbar-start" >
+        <a class="navbar-item" id="item-0" href="./about.html"> Home
+        </a>
+        <a class="navbar-item" id="item-1" href="./app.html"> App
+        </a>
+        <a class="navbar-item" id="item-2" href="./favorites.html"> Favorites
+        </a>
+        <a class="navbar-item" id="item-3" href="./sources.html"> Documentation
+        </a>
+      </div>
+    </div>
+  </nav>
 </header>
 `;
 class MDBCHeader extends HTMLElement {
@@ -54,10 +59,13 @@ class MDBCHeader extends HTMLElement {
     this.attachShadow({ mode: 'open' });
     this.shadowRoot.appendChild(template.content.cloneNode(true));
     this.h1 = this.shadowRoot.querySelector('h1');
-    console.log(`#item-${this.dataset.page}`);
     this.item = this.shadowRoot.querySelector(`#item-${this.dataset.page}`);
-    console.log(this.item);
     this.item.className += ' has-text-link has-background-light';
+    this.pageItems = this.shadowRoot.querySelector('#pages');
+    this.shadowRoot.querySelector('.navbar-burger').onclick = (el) => {
+      el.target.classList.toggle('is-active');
+      this.pageItems.classList.toggle('is-active');
+    };
   }
 
   connectedCallback() {

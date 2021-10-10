@@ -1,7 +1,6 @@
-import cytoscape from 'https://cdn.jsdelivr.net/npm/cytoscape@3.19.1/dist/cytoscape.esm.min.js';
+//import cytoscape from 'https://cdn.jsdelivr.net/npm/cytoscape@3.19.1/dist/cytoscape.esm.min.js';
 import { API_DATA } from '../env.js';
 import { API_ENDPOINT, IMAGES_ENDPOINT } from '../consts.js';
-
 const nickCage = 'nicolas cage';
 const jeremySumpter = 'jeremy sumpter';
 const angelinaJolie = 'angelina jolie';
@@ -14,73 +13,35 @@ template.innerHTML = `
 <style>
   .fixed-card {
     display: inline-block !important;
-    width: 30%;
+    width: 20%;
     height: 50%;
   };
 </style>
 <!-- <div id="cyto-canvas" style="width:500px;height:500px;background-color:red;"> -->
-<div class="cards">
-  <div class="card fixed-card" style="width: 20%">
-    <div class="card-image">
-      <figure class="image is-3by4">
-        <img
-          id="source"
-          alt="Actor number 1"
-        />
-      </figure>
-    </div>
-    <div class="card-content" style="height: 2em; padding: 0">
-      <p id="label-source" class="card-content" style="padding: 0; text-align: center">
-      </p>
-    </div>
+<div class="app-head">
+  <div class="card fixed-card">
+    <mdbc-card id="source-card"></mdbc-card>
   </div>
-  <div class="card fixed-card" style="width: 20%">
-    <div class="card-image">
-      <figure class="image is-3by4">
-        <img
-          id="current"
-          alt="Actor number 2"
-        />
-      </figure>
-    </div>
-    <div class="card-content" style="height: 2em; padding: 0">
-      <p id="label-current" class="card-content" style="padding: 0; text-align: center">
-        Current: Nicolas Cage
-      </p>
-    </div>
+  <div class="card fixed-card">
+    <mdbc-card id="current-card"></mdbc-card>
   </div>
-  <div class="card fixed-card" style="width: 20%">
-    <div class="card-image">
-      <figure class="image is-3by4">
-        <img
-          id="target"
-          alt="Actor number 3"
-        />
-      </figure>
-    </div>
-    <div class="card-content" style="height: 2em; padding: 0">
-      <p id="label-target" class="card-content" style="padding: 0; text-align: center">
-      </p>
-    </div>
+  <div class="card fixed-card">
+    <mdbc-card id="target-card"></mdbc-card>
   </div>
 </div>
 <hr>
-<div id="options" class="cards">
-
-</div>
+<mdbc-options data-index=0></mdbc-options>
 `;
+
 class MDBCApp extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
     this.shadowRoot.appendChild(template.content.cloneNode(true));
-    this.startImg = this.shadowRoot.querySelector('#source');
-    this.startLabel = this.shadowRoot.querySelector('#label-source');
-    this.targetImg = this.shadowRoot.querySelector('#target');
-    this.targetLabel = this.shadowRoot.querySelector('#label-target');
-    this.selectedImg = this.shadowRoot.querySelector('#current');
-    this.selectedLabel = this.shadowRoot.querySelector('#label-current');
-    this.optionsElement = this.shadowRoot.querySelector('#options');
+    this.sourceCard = this.shadowRoot.querySelector('#source-card');
+    this.currentCard = this.shadowRoot.querySelector('#current-card');
+    this.targetCard = this.shadowRoot.querySelector('#target-card');
+    this.optionsElement = this.shadowRoot.querySelector('mdbc-options');
     this.start = jeremySumpter;
     this.target = angelinaJolie;
     this.startObj = null;
@@ -137,37 +98,26 @@ class MDBCApp extends HTMLElement {
     return JSON.parse(text);
   }
 
-  asyncconnectedCallback() {}
-
-  disconnectedCallback() {}
-
-  attributeChangedCallback() {}
-
-  static get observedAttribute() {}
-
   renderStatus() {
     if (this.startObj) {
-      this.startLabel.innerHTML = `Start: ${this.startObj.name}`;
-      this.startImg.src = `${IMAGES_ENDPOINT}${this.startObj.profile_path}`;
-    }
-    if (this.targetObj) {
-      this.targetLabel.innerHTML = `Target: ${this.targetObj.name}`;
-      this.targetImg.src = `${IMAGES_ENDPOINT}${this.targetObj.profile_path}`;
+      this.sourceCard.dataset.source = `${IMAGES_ENDPOINT}${this.startObj.profile_path}`;
+      this.sourceCard.dataset.label = `Start: ${this.startObj.name}`;
+      this.sourceCard.dataset.alt = `Photo of ${this.startObj.name}`;
     }
     if (this.selectedObj) {
-      this.selectedLabel.innerHTML = `Current: ${this.selectedObj.name}`;
-      this.selectedImg.src = `${IMAGES_ENDPOINT}${this.selectedObj.profile_path}`;
+      this.currentCard.dataset.source = `${IMAGES_ENDPOINT}${this.selectedObj.profile_path}`;
+      this.currentCard.dataset.label = `Current: ${this.selectedObj.name}`;
+      this.currentCard.dataset.alt = `Photo of ${this.selectedObj.name}`;
+    }
+    if (this.targetObj) {
+      this.targetCard.dataset.source = `${IMAGES_ENDPOINT}${this.targetObj.profile_path}`;
+      this.targetCard.dataset.label = `Target: ${this.targetObj.name}`;
+      this.targetCard.dataset.alt = `Photo of ${this.targetObj.name}`;
     }
   }
 
   renderOptions() {
-    this.optionsElement.innerHTML = `
-      <ul>
-      ${this.optionsList
-        .map((movie) => `<li>${movie.original_title}</li>`)
-        .join('')}
-      </ul>
-    `;
+    this.optionsElement.dataset.options = JSON.stringify(this.optionsList);
   }
 }
 

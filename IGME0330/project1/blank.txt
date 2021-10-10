@@ -1,3 +1,0 @@
-empty
-
-      <img id="logo" src="../../public/logo.jpg" alt="logo" />
