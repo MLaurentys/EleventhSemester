@@ -34,7 +34,7 @@ class MDBCCard extends HTMLElement {
   }
 
   static get observedAttributes() {
-    return ['data-source', 'data-label'];
+    return ['data-source', 'data-label', 'data-alt'];
   }
 
   render() {

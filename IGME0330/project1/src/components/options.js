@@ -20,24 +20,45 @@ class MDBCOptions extends HTMLElement {
     super();
     this.attachShadow({ mode: 'open' });
     this.shadowRoot.appendChild(template.content.cloneNode(true));
+    this.shadowRoot.addEventListener('cardClicked', this.handleOptionSelection);
     this.optionsElement = this.shadowRoot.querySelector('#options');
     this.parsedData = [];
+    this.removeCardListeners = this.removeCardListeners.bind(this);
   }
+
+  handleOptionSelection = ({ detail }) => {
+    this.dispatchEvent(
+      new CustomEvent('optionSelected', {
+        composed: true,
+        bubbles: true,
+        detail: this.parsedData[detail].id,
+      })
+    );
+  };
 
   connectedCallback() {
     this.render();
   }
 
-  disconnectedCallback() {}
+  disconnectedCallback() {
+    this.shadowRoot.removeEventListener('cardClicked');
+  }
+
+  removeCardListeners() {
+    const cards = this.optionsElement.querySelectorAll('.column');
+    cards.forEach((card) => (card.onclick = null));
+  }
 
   attributeChangedCallback(name, oldVal, newVal) {
     if (name === 'data-options') {
       try {
         this.parsedData = JSON.parse(newVal);
       } catch {
-        console.log('Could not parse options');
+        console.info('Could not parse options');
       }
     }
+    this.removeCardListeners();
+    this.optionsElement.innerHTML = '';
     this.render();
   }
 
@@ -45,18 +66,28 @@ class MDBCOptions extends HTMLElement {
     return ['data-options', 'data-index'];
   }
 
+  handleCardClick = (index, _) => {
+    this.shadowRoot.dispatchEvent(
+      new CustomEvent('cardClicked', {
+        detail: index,
+      })
+    );
+  };
+
   render() {
     this.parsedData
       .slice(6 * +this.dataset.index, 6 * (+this.dataset.index + 1))
-      .forEach((option) => {
+      .forEach((option, index) => {
         const div = document.createElement('div');
         div.className = 'column is-2';
+        div.myParam = 6 * +this.dataset.index + index;
         const card = createCard(
-          `${IMAGES_ENDPOINT}${option.poster_path}`,
-          'Photo of' + option.original_title,
-          option.original_title
+          `${IMAGES_ENDPOINT}${option.img_path}`,
+          'Photo of' + option.name,
+          option.name
         );
         div.appendChild(card.cloneNode(true));
+        div.onclick = this.handleCardClick.bind(null, index);
         this.optionsElement.appendChild(div);
       });
   }

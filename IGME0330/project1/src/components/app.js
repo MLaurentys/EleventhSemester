@@ -1,6 +1,14 @@
 //import cytoscape from 'https://cdn.jsdelivr.net/npm/cytoscape@3.19.1/dist/cytoscape.esm.min.js';
 import { API_DATA } from '../env.js';
 import { API_ENDPOINT, IMAGES_ENDPOINT } from '../consts.js';
+import {
+  loadMovieById,
+  loadPeopleOptions,
+  loadMovieOptions,
+  loadPersonByName,
+  loadPersonById,
+} from '../utils.js';
+
 const nickCage = 'nicolas cage';
 const jeremySumpter = 'jeremy sumpter';
 const angelinaJolie = 'angelina jolie';
@@ -42,12 +50,15 @@ class MDBCApp extends HTMLElement {
     this.currentCard = this.shadowRoot.querySelector('#current-card');
     this.targetCard = this.shadowRoot.querySelector('#target-card');
     this.optionsElement = this.shadowRoot.querySelector('mdbc-options');
-    this.start = jeremySumpter;
-    this.target = angelinaJolie;
+    this.shadowRoot.addEventListener(
+      'optionSelected',
+      this.handleOptionSelected
+    );
     this.startObj = null;
     this.targetObj = null;
     this.selectedObj = null;
     this.optionsList = null;
+    this.browsing = 'movies';
     this.loadAsync = this.loadAsync.bind(this);
     this.renderStatus = this.renderStatus.bind(this);
     this.renderOptions = this.renderOptions.bind(this);
@@ -55,31 +66,26 @@ class MDBCApp extends HTMLElement {
   }
 
   async loadAsync() {
-    this.targetObj = await this.loadPerson(this.target);
-    this.startObj = await this.loadPerson(this.start);
+    this.targetObj = await loadPersonByName(angelinaJolie);
+    this.startObj = await loadPersonByName(jeremySumpter);
     this.selectedObj = this.startObj;
-    this.optionsList = await this.loadMovieOptions(this.startObj);
+    this.optionsList = await loadMovieOptions(this.startObj.id);
     this.renderStatus();
     this.renderOptions();
   }
 
-  async loadPerson(name) {
-    const uri =
-      API_ENDPOINT +
-      'search/person?api_key=' +
-      API_DATA.API_KEY +
-      '&query=' +
-      encodeURIComponent(name);
-    return (await this.loadData(uri)).results[0];
-  }
-
-  async loadMovieOptions(actor) {
-    const uri =
-      API_ENDPOINT +
-      `person/${actor.id}/movie_credits` +
-      `?api_key=${API_DATA.API_KEY}`;
-    return (await this.loadData(uri)).cast;
-  }
+  handleOptionSelected = async ({ detail }) => {
+    if (this.browsing === 'movies') {
+      this.browsing = 'people';
+      this.selectedObj = await loadMovieById(detail);
+      this.optionsList = await loadPeopleOptions(this.selectedObj.id);
+    } else {
+      this.browsing === 'movies';
+      this.selectedObj = await loadPersonById(detail);
+      this.optionsList = await loadMovieOptions(this.selectedObj.id);
+    }
+    this.render();
+  };
 
   async loadMovie(name) {
     const uri =
@@ -99,25 +105,26 @@ class MDBCApp extends HTMLElement {
   }
 
   renderStatus() {
-    if (this.startObj) {
-      this.sourceCard.dataset.source = `${IMAGES_ENDPOINT}${this.startObj.profile_path}`;
-      this.sourceCard.dataset.label = `Start: ${this.startObj.name}`;
-      this.sourceCard.dataset.alt = `Photo of ${this.startObj.name}`;
-    }
-    if (this.selectedObj) {
-      this.currentCard.dataset.source = `${IMAGES_ENDPOINT}${this.selectedObj.profile_path}`;
-      this.currentCard.dataset.label = `Current: ${this.selectedObj.name}`;
-      this.currentCard.dataset.alt = `Photo of ${this.selectedObj.name}`;
-    }
-    if (this.targetObj) {
-      this.targetCard.dataset.source = `${IMAGES_ENDPOINT}${this.targetObj.profile_path}`;
-      this.targetCard.dataset.label = `Target: ${this.targetObj.name}`;
-      this.targetCard.dataset.alt = `Photo of ${this.targetObj.name}`;
-    }
+    console.log(this.selectedObj);
+    if (!this.startObj || !this.selectedObj || !this.targetObj) return;
+    this.sourceCard.dataset.source = `${IMAGES_ENDPOINT}${this.startObj.img_path}`;
+    this.sourceCard.dataset.label = `Start: ${this.startObj.name}`;
+    this.sourceCard.dataset.alt = `Photo of ${this.startObj.name}`;
+    this.currentCard.dataset.source = `${IMAGES_ENDPOINT}${this.selectedObj.img_path}`;
+    this.currentCard.dataset.label = `Current: ${this.selectedObj.name}`;
+    this.currentCard.dataset.alt = `Photo of ${this.selectedObj.name}`;
+    this.targetCard.dataset.source = `${IMAGES_ENDPOINT}${this.targetObj.img_path}`;
+    this.targetCard.dataset.label = `Target: ${this.targetObj.name}`;
+    this.targetCard.dataset.alt = `Photo of ${this.targetObj.name}`;
   }
 
   renderOptions() {
     this.optionsElement.dataset.options = JSON.stringify(this.optionsList);
+  }
+
+  render() {
+    this.renderStatus();
+    this.renderOptions();
   }
 }
 
