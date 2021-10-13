@@ -1,0 +1,14 @@
+Satellite starts below the South Pole
+Laser beam is drawn to surface of earth and not the center
+GUI displays latitude and longitude
+Up/down keys adjust orbital radius and Left/Right keys adjust speed
+Satellite camera is in “selfie” mode
+
+---------------
+Satellite not positioned below the South Pole (-1)
+Laser beam drawn to center of earth (-3)
+Laser beam not drawn (-4)
+Gui missing required info (-3)
+Inputs not working right (-1)
+Input not working (-2)
+Satellite camera not in selfie mode (-2)
