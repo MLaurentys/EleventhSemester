@@ -79,15 +79,17 @@ class MDBCOptions extends HTMLElement {
       .slice(6 * +this.dataset.index, 6 * (+this.dataset.index + 1))
       .forEach((option, index) => {
         const div = document.createElement('div');
+        div.onclick = this.handleCardClick.bind(
+          null,
+          6 * +this.dataset.index + index
+        );
         div.className = 'column is-2';
-        div.myParam = 6 * +this.dataset.index + index;
         const card = createCard(
           `${IMAGES_ENDPOINT}${option.img_path}`,
-          'Photo of' + option.name,
+          'Photo of ' + option.name,
           option.name
         );
         div.appendChild(card.cloneNode(true));
-        div.onclick = this.handleCardClick.bind(null, index);
         this.optionsElement.appendChild(div);
       });
   }

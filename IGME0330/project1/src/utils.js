@@ -3,11 +3,18 @@ import { API_ENDPOINT, IMAGES_ENDPOINT } from './consts.js';
 
 export function createCard(src, alt, label) {
   const template = document.createElement('template');
-  template.innerHTML = `<mdbc-card
+  if (src) {
+    template.innerHTML = `<mdbc-card
     data-source=${src}
     data-alt='${alt}'
     data-label='${label}'>
     </mdbc>`;
+  } else {
+    template.innerHTML = `<mdbc-card
+    data-alt='${alt}'
+    data-label='${label}'>
+    </mdbc>`;
+  }
   return template.content;
 }
 
@@ -54,7 +61,7 @@ export async function loadPeopleOptions(id) {
       };
     });
   } catch {
-    console.info('Could not load movie credits info');
+    console.info('Could not load people options by id');
     return [];
   }
 }
@@ -74,7 +81,7 @@ export async function loadMovieOptions(id) {
       };
     });
   } catch {
-    console.info('Could not load movie credits info');
+    console.info('Could not load movie options');
     return [];
   }
 }
@@ -104,4 +111,26 @@ async function loadData(uriString) {
   const value = await result.arrayBuffer();
   const text = new TextDecoder().decode(value);
   return JSON.parse(text);
+}
+
+function getRandomId() {
+  //numbers found to give relatively new cast inside the range
+  const max = 100000;
+  const min = 50000;
+  return Math.floor(Math.random() * (max - min) + min);
+}
+export async function loadRandomPerson() {
+  let i = 0;
+  while (i < 10) {
+    const id = getRandomId();
+    try {
+      const test = await loadPersonById(id);
+      if (test.name) {
+        return test;
+      }
+    } catch {}
+  }
+  alert(
+    'Not able to load in 10 attempts. Please hit reload icon to try again.'
+  );
 }

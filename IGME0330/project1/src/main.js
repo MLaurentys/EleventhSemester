@@ -3,6 +3,7 @@ import { MDBCApp } from './components/app.js';
 import { MDBCFooter } from './components/footer.js';
 import { MDBCCard } from './components/card.js';
 import { MDBCOptions } from './components/options.js';
+import { MDBCFavorites } from './components/favorites.js';
 
 const init = () => {
   const url = 'data/all.json';
@@ -11,6 +12,7 @@ const init = () => {
   customElements.define('mdbc-footer', MDBCFooter);
   customElements.define('mdbc-card', MDBCCard);
   customElements.define('mdbc-options', MDBCOptions);
+  customElements.define('mdbc-favorites', MDBCFavorites);
 };
 
 window.onload = init;

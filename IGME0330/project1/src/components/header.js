@@ -17,7 +17,7 @@ h1{
 }
 .title-row {
   min-height:15vh;
-  background-image: url('../../images/header_sky.jpg');
+  background-image: url('https://people.rit.edu/~mtl9706/330/project1/images/header_sky.jpg');
   background-position: 50% 50%;
 }
 #logo {
@@ -31,7 +31,7 @@ h1{
   </div>
   <nav class="navbar" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
-      <img class="navbar-item" id="logo" src="../../images/logo2.jpg" alt="logo"/>
+      <img class="navbar-item" id="logo" src="https://people.rit.edu/~mtl9706/330/project1/images/logo2.jpg" alt="logo"/>
       <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="pages">
         <span aria-hidden="true"></span>
         <span aria-hidden="true"></span>

@@ -7,6 +7,7 @@ import {
   loadMovieOptions,
   loadPersonByName,
   loadPersonById,
+  loadRandomPerson,
 } from '../utils.js';
 
 const nickCage = 'nicolas cage';
@@ -23,21 +24,35 @@ template.innerHTML = `
     display: inline-block !important;
     width: 20%;
     height: 50%;
-  };
+  }
+  textarea {
+    width:50%;
+  }
 </style>
-<!-- <div id="cyto-canvas" style="width:500px;height:500px;background-color:red;"> -->
-<div class="app-head">
-  <div class="card fixed-card">
+<div class="mt-5 mb-5" style="width:100%; text-align:center">
+<button class="has-background-info p-5  button is-outlined" id="new-game">
+  New game
+</button>
+</div>
+<div class="app-head" style="width:100%; text-align:center">
+  <div class="card fixed-card mr-5">
+    <button class="ml-5" id="change-source">&#8635;</button>
+    <textarea class="ml-1" id="text-source"></textarea>
+    <button id="search-source">&#128270;</button>
     <mdbc-card id="source-card"></mdbc-card>
   </div>
   <div class="card fixed-card">
     <mdbc-card id="current-card"></mdbc-card>
   </div>
-  <div class="card fixed-card">
-    <mdbc-card id="target-card"></mdbc-card>
+  <div class="card fixed-card ml-5">
+  <button class="ml-5" id="change-target">&#8635;</button>
+  <textarea class="ml-1" id="text-target"></textarea>
+  <button id="search-target">&#128270;</button>
+  <mdbc-card id="target-card"></mdbc-card>
   </div>
 </div>
 <hr>
+<button id="prevBt"> <- </button> <button id="nextBt"> -> </button>
 <mdbc-options data-index=0></mdbc-options>
 `;
 
@@ -49,6 +64,37 @@ class MDBCApp extends HTMLElement {
     this.sourceCard = this.shadowRoot.querySelector('#source-card');
     this.currentCard = this.shadowRoot.querySelector('#current-card');
     this.targetCard = this.shadowRoot.querySelector('#target-card');
+    this.btPrev = this.shadowRoot.querySelector('#prevBt');
+    this.btNext = this.shadowRoot.querySelector('#nextBt');
+    this.shadowRoot.querySelector('#change-source').onclick = async () => {
+      this.startObj = await loadRandomPerson();
+      this.selectedObj = this.startObj;
+      this.page = 0;
+      this.optionsList = await loadMovieOptions(this.startObj.id);
+      this.render();
+    };
+    this.shadowRoot.querySelector('#change-target').onclick = async () => {
+      this.targetObj = await loadRandomPerson();
+      this.renderStatus();
+      if (this.targetObj.id === this.selectedObj.id) this.winGame();
+    };
+    this.shadowRoot.querySelector('#search-source').onclick = async () => {
+      this.startObj = await loadPersonByName(
+        this.shadowRoot.querySelector('#text-source').value
+      );
+      this.selectedObj = this.startObj;
+      this.page = 0;
+      this.optionsList = await loadMovieOptions(this.startObj.id);
+      this.render();
+    };
+    this.shadowRoot.querySelector('#search-target').onclick = async () => {
+      this.targetObj = await loadPersonByName(
+        this.shadowRoot.querySelector('#text-target').value
+      );
+      if (this.targetObj.id === this.selectedObj.id) this.winGame();
+      this.renderStatus();
+    };
+    this.shadowRoot.querySelector('#new-game').onclick = () => this.loadAsync();
     this.optionsElement = this.shadowRoot.querySelector('mdbc-options');
     this.shadowRoot.addEventListener(
       'optionSelected',
@@ -58,7 +104,19 @@ class MDBCApp extends HTMLElement {
     this.targetObj = null;
     this.selectedObj = null;
     this.optionsList = null;
+    this.currentPath = [];
     this.browsing = 'movies';
+    this.page = 0;
+    this.btPrev.onclick = () => {
+      if (this.page > 0) {
+        this.page--;
+        this.renderOptions();
+      }
+    };
+    this.btNext.onclick = () => {
+      this.page++;
+      this.renderOptions();
+    };
     this.loadAsync = this.loadAsync.bind(this);
     this.renderStatus = this.renderStatus.bind(this);
     this.renderOptions = this.renderOptions.bind(this);
@@ -66,60 +124,69 @@ class MDBCApp extends HTMLElement {
   }
 
   async loadAsync() {
-    this.targetObj = await loadPersonByName(angelinaJolie);
-    this.startObj = await loadPersonByName(jeremySumpter);
+    this.targetObj = await loadRandomPerson();
+    this.startObj = await loadRandomPerson();
     this.selectedObj = this.startObj;
     this.optionsList = await loadMovieOptions(this.startObj.id);
-    this.renderStatus();
-    this.renderOptions();
+    this.render();
   }
 
+  winGame = () => {
+    alert('Congratulations!');
+    const previousRuns = localStorage.getItem('movies_cartographer') || '[]';
+    let runs = JSON.parse(previousRuns);
+    runs.push(this.currentPath);
+    localStorage.setItem('movies_cartographer', JSON.stringify(runs));
+  };
+
   handleOptionSelected = async ({ detail }) => {
+    this.page = 0;
+    if (detail === this.targetObj.id) {
+      this.winGame();
+      return;
+    }
+    let newObj, newList;
     if (this.browsing === 'movies') {
-      this.browsing = 'people';
-      this.selectedObj = await loadMovieById(detail);
-      this.optionsList = await loadPeopleOptions(this.selectedObj.id);
+      newObj = await loadMovieById(detail);
+      newList = await loadPeopleOptions(newObj.id);
     } else {
-      this.browsing === 'movies';
-      this.selectedObj = await loadPersonById(detail);
-      this.optionsList = await loadMovieOptions(this.selectedObj.id);
+      newObj = await loadPersonById(detail);
+      newList = await loadMovieOptions(newObj.id);
+    }
+    if (newObj.name && newList.length > 0) {
+      this.optionsList = newList;
+      this.selectedObj = newObj;
+      if (this.browsing === 'movies') this.browsing = 'people';
+      else this.browsing = 'movies';
+    } else {
+      alert('Search unsuccesful. Select another');
     }
     this.render();
   };
 
-  async loadMovie(name) {
-    const uri =
-      API_ENDPOINT +
-      'search/movie?api_key=' +
-      API_DATA.API_KEY +
-      '&query=' +
-      encodeURIComponent(name);
-    return await this.loadData(uri);
-  }
-
-  async loadData(uriString) {
-    const result = await fetch(uriString);
-    const value = await result.arrayBuffer();
-    const text = new TextDecoder().decode(value);
-    return JSON.parse(text);
-  }
-
   renderStatus() {
-    console.log(this.selectedObj);
+    //note it alternates Person -> Movie -> Person
+    if (
+      this.currentPath.length === 0 ||
+      this.currentPath.slice(-1)[0] !== this.selectedObj.id
+    ) {
+      this.currentPath.push(this.selectedObj.id);
+    }
     if (!this.startObj || !this.selectedObj || !this.targetObj) return;
-    this.sourceCard.dataset.source = `${IMAGES_ENDPOINT}${this.startObj.img_path}`;
     this.sourceCard.dataset.label = `Start: ${this.startObj.name}`;
     this.sourceCard.dataset.alt = `Photo of ${this.startObj.name}`;
-    this.currentCard.dataset.source = `${IMAGES_ENDPOINT}${this.selectedObj.img_path}`;
+    this.sourceCard.dataset.source = `${IMAGES_ENDPOINT}${this.startObj.img_path}`;
     this.currentCard.dataset.label = `Current: ${this.selectedObj.name}`;
     this.currentCard.dataset.alt = `Photo of ${this.selectedObj.name}`;
-    this.targetCard.dataset.source = `${IMAGES_ENDPOINT}${this.targetObj.img_path}`;
+    this.currentCard.dataset.source = `${IMAGES_ENDPOINT}${this.selectedObj.img_path}`;
     this.targetCard.dataset.label = `Target: ${this.targetObj.name}`;
     this.targetCard.dataset.alt = `Photo of ${this.targetObj.name}`;
+    this.targetCard.dataset.source = `${IMAGES_ENDPOINT}${this.targetObj.img_path}`;
   }
 
   renderOptions() {
     this.optionsElement.dataset.options = JSON.stringify(this.optionsList);
+    this.optionsElement.dataset.index = this.page;
   }
 
   render() {

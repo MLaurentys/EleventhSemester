@@ -81,20 +81,68 @@
       <ul>
         <li>
           Use of bulma for almost all layout classes, guaranteeing mobile
-          friendlyness
+          friendlyness. All the additional layout style is in default-styles and
+          is tested to be mobile friendly as well. Font and sizing styles are
+          found in shadow doms.
         </li>
         <li>
-          All the additional style is in default-styles and is tested to be
-          mobile friendly as well
+          When you load the app page, it is very likely that you will bump into
+          cards without an image. I could remove those, but that would break the
+          game in some cases, making it impossible to reach target.
+        </li>
+        <li>
+          The game is beatable in most cases, but cases it is not are not
+          handled.
+        </li>
+        <li>
+          There is support for choosing start and end points to provide
+          customized play, but also to test the use of localStorage.
+        </li>
+        <li>
+          The options part of the app is loaded in a single request... I could
+          not find a way to paginate the request.
         </li>
       </ul>
-      <h3>Grading:</h3>
+      <h3>Grading: (I will list discounts and bonus I find correct)</h3>
       <ul>
-        <li></li>
+        <li>
+          Interface looks "amateurish" or like GIF Finder HW (-10. When no image
+          is found card position becomes a bit off)
+        </li>
+        <li>
+          Code shows errors in console (-0: There is one error. It is generated
+          by loading a random id that is not found in the database. The program
+          recovers from it by loading an additional random id. That seems
+          unavoidable on firefox. I do not believe it is possible to prevent
+          fetch 404 errors from displaying.)
+        </li>
+        <li>
+          App functionality and programming goes beyond what we did in class
+          (+10)
+        </li>
+        <li>App is "portfolio quality" (or nearly so) (+5)</li>
+        <li>
+          There are CSS validation erros, but they are from bulma package.
+        </li>
+        <li>
+          I met the expected goals and some of mine. However, I do see much room
+          for improvement still.
+        </li>
       </ul>
       <h3>TODO:</h3>
       <ul>
-        <li></li>
+        <li>
+          Favorites page: should load images and have path being displayed with
+          images. This should not be a problem at all.
+        </li>
+        <li>Add moving parts to pages, mabe some 'hmmm' moving emojis.</li>
+        <li>
+          Fix button position in the app page. They look too amateur right now.
+        </li>
+        <li>
+          Maybe display less images per pagination on mobile. Have it using a
+          swiper would be good.
+        </li>
       </ul>
     </div>
     <mdbc-footer></mdbc-footer>
