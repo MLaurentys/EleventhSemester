@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>The Movies Cartographer</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&display=swap"
+      rel="stylesheet"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script type="module" src="../src/main.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css"
+    />
+    <link rel="stylesheet" href="../styles/default-styles.css" />
+  </head>
+
+  <body>
+    <mdbc-header data-page="3"></mdbc-header>
+    <div class="content container">
+      <h2>Info about the project:</h2>
+      <h3>PROJECT REQUIREMENTS:</h3>
+      <ul>
+        <li>
+          <a>
+            https://github.com/tonethar/IGME-330-Fall-2021/blob/main/projects/project-1.md
+          </a>
+        </li>
+      </ul>
+      <h3>RESOURCES UTILIZED:</h3>
+      <ul>
+        <li>
+          <span>Footer glued to bottom of page: </span>
+          <a> https://github.com/jgthms/bulma/issues/47 </a>
+        </li>
+        <li>
+          <span>Conver JPG I edited into favicon: </span>
+          <a> https://favicon.io/favicon-converter/ </a>
+        </li>
+        <li>
+          <span> Helped figuring out how to make the burger button work: </span>
+          <a>
+            https://stackoverflow.com/questions/54848094/bulma-navbar-hamburger-menu-doesnt-expand
+          </a>
+        </li>
+        <li>
+          <a>
+            Adding extra params to listeners (arrow functons not possible):
+            https://stackoverflow.com/questions/256754/how-to-pass-arguments-to-addeventlistener-listener-function
+          </a>
+        </li>
+      </ul>
+      <h3>API USED:</h3>
+      <ul>
+        <li>
+          <span>API home: </span>
+          <a> https://www.themoviedb.org/ </a>
+        </li>
+        <li>
+          <span>API docs: </span>
+          <a> https://www.themoviedb.org/documentation/api </a>
+        </li>
+        <li>
+          <span>Used API endpoints: </span>
+          <ul>
+            <li><a>https://api.themoviedb.org/3/search/person</a></li>
+            <li>
+              <a>https://api.themoviedb.org/3/person/{id}/movie_credits</a>
+            </li>
+            <li><a>https://image.tmdb.org/t/p/original/</a></li>
+          </ul>
+        </li>
+        <li>
+          <span>
+            API key: needed. Sent inside delivery zip and hosted on server
+          </span>
+        </li>
+      </ul>
+      <h3>NOTEWORTHY:</h3>
+      <ul>
+        <li>
+          Use of bulma for almost all layout classes, guaranteeing mobile
+          friendlyness. All the additional layout style is in default-styles and
+          is tested to be mobile friendly as well. Font and sizing styles are
+          found in shadow doms.
+        </li>
+        <li>
+          When you load the app page, it is very likely that you will bump into
+          cards without an image. I could remove those, but that would break the
+          game in some cases, making it impossible to reach target.
+        </li>
+        <li>
+          The game is beatable in most cases, but cases it is not are not
+          handled.
+        </li>
+        <li>
+          There is support for choosing start and end points to provide
+          customized play, but also to test the use of localStorage.
+        </li>
+        <li>
+          The options part of the app is loaded in a single request... I could
+          not find a way to paginate the request.
+        </li>
+      </ul>
+      <h3>Grading: (I will list discounts and bonus I find correct)</h3>
+      <ul>
+        <li>
+          Interface looks "amateurish" or like GIF Finder HW (-10. When no image
+          is found card position becomes a bit off)
+        </li>
+        <li>
+          Code shows errors in console (-0: There is one error. It is generated
+          by loading a random id that is not found in the database. The program
+          recovers from it by loading an additional random id. That seems
+          unavoidable on firefox. I do not believe it is possible to prevent
+          fetch 404 errors from displaying.)
+        </li>
+        <li>
+          App functionality and programming goes beyond what we did in class
+          (+10)
+        </li>
+        <li>App is "portfolio quality" (or nearly so) (+5)</li>
+        <li>
+          There are CSS validation erros, but they are from bulma package.
+        </li>
+        <li>
+          I met the expected goals and some of mine. However, I do see much room
+          for improvement still.
+        </li>
+      </ul>
+      <h3>TODO:</h3>
+      <ul>
+        <li>
+          Favorites page: should load images and have path being displayed with
+          images. This should not be a problem at all.
+        </li>
+        <li>Add moving parts to pages, mabe some 'hmmm' moving emojis.</li>
+        <li>
+          Fix button position in the app page. They look too amateur right now.
+        </li>
+        <li>
+          Maybe display less images per pagination on mobile. Have it using a
+          swiper would be good.
+        </li>
+      </ul>
+    </div>
+    <mdbc-footer></mdbc-footer>
+  </body>
+</html>
