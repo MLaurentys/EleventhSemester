@@ -17,7 +17,6 @@ template.innerHTML = `
 </style>
 <div class="mt-5 mb-5" style="width:100%; text-align:center">
   <mdbc-game-state id="state"></mdbc-game-state>
-  <hr>
   <button id="prevBt"> <- </button> <button id="nextBt"> -> </button>
   <mdbc-options data-index=0></mdbc-options>
 </div>
@@ -32,10 +31,6 @@ class MDBCApp extends HTMLElement {
     this.btPrev = this.shadowRoot.querySelector("#prevBt");
     this.btNext = this.shadowRoot.querySelector("#nextBt");
     this.optionsElement = this.shadowRoot.querySelector("mdbc-options");
-    this.shadowRoot.addEventListener(
-      "optionSelected",
-      this.handleOptionSelected
-    );
     this.source = null;
     this.target = null;
     this.current = null;
@@ -56,7 +51,54 @@ class MDBCApp extends HTMLElement {
     this.loadAsync = this.loadAsync.bind(this);
     this.renderStatus = this.renderStatus.bind(this);
     this.renderOptions = this.renderOptions.bind(this);
+    this.addEventListeners = this.addEventListeners.bind(this);
+    this.restartGame = this.restartGame.bind(this);
+    this.checkWonGame = this.checkWonGame.bind(this);
+    this.addEventListeners();
     this.loadAsync();
+  }
+
+  addEventListeners() {
+    const addListener = this.shadowRoot.addEventListener;
+    addListener("optionSelected", this.handleOptionSelected);
+    addListener("selectedRandomSource", async () => {
+      this.source = await loadRandomPerson();
+      this.current = this.source;
+      this.checkWonGame();
+      this.restartGame();
+      this.render();
+    });
+    addListener("selectedRandomTarget", async () => {
+      this.target = await loadRandomPerson();
+      this.checkWonGame();
+      this.render();
+    });
+    addListener("selectedSource", async (name) => {
+      this.source = await loadPersonByName(name);
+      this.current = this.source;
+      this.checkWonGame();
+      this.restartGame();
+      this.render();
+    });
+    addListener("selectedTarget", async (name) => {
+      this.target = await loadPersonByName(name);
+      this.checkWonGame();
+      this.render();
+    });
+    addListener("selectedNewGame", async () => {
+      this.source = await loadRandomPerson();
+      this.current = this.source;
+      this.target = await loadRandomPerson();
+      this.restartGame();
+      this.checkWonGame();
+      this.render();
+    });
+  }
+
+  async restartGame() {
+    this.currentPath = [];
+    this.page = 0;
+    this.optionsList = await loadMovieOptions(this.source.id);
   }
 
   async loadAsync() {
@@ -67,20 +109,19 @@ class MDBCApp extends HTMLElement {
     this.render();
   }
 
-  winGame = () => {
+  checkWonGame = () => {
+    if (this.current.id !== this.target.id) return false;
     alert("Congratulations!");
     const previousRuns = localStorage.getItem("movies_cartographer") || "[]";
     let runs = JSON.parse(previousRuns);
     runs.push(this.currentPath);
     localStorage.setItem("movies_cartographer", JSON.stringify(runs));
+    return true;
   };
 
   handleOptionSelected = async ({ detail }) => {
     this.page = 0;
-    if (detail === this.target.id) {
-      this.winGame();
-      return;
-    }
+    if (this.checkWonGame()) return;
     let newObj, newList;
     if (this.browsing === "movies") {
       newObj = await loadMovieById(detail);
@@ -101,12 +142,11 @@ class MDBCApp extends HTMLElement {
   };
 
   renderStatus() {
+    if (!(this.source && this.current && this.target)) return;
     let handler = this.stateHandler;
-    console.log(handler);
     handler.dataset.source = `${this.source.name};${this.source.img_path}`;
     handler.dataset.current = `${this.current.name};${this.current.img_path}`;
     handler.dataset.target = `${this.target.name};${this.target.img_path}`;
-    console.log(handler);
   }
 
   renderOptions() {

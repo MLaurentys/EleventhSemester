@@ -43,6 +43,8 @@ template.innerHTML = `
 `;
 
 function dispatch(element, eventName, detail) {
+  console.log("DISPATCHED");
+  console.log(eventName);
   element.dispatchEvent(
     new CustomEvent(eventName, {
       composed: true,
@@ -60,9 +62,6 @@ class MDBCGameState extends HTMLElement {
     this.sourceCard = this.shadowRoot.querySelector("#source-card");
     this.currentCard = this.shadowRoot.querySelector("#current-card");
     this.targetCard = this.shadowRoot.querySelector("#target-card");
-    this.sourceObj = { name: null, img_path: null };
-    this.targetObj = { name: null, img_path: null };
-    this.currentObj = { name: null, img_path: null };
     this.randomizeSource = this.shadowRoot.querySelector("#change-source");
     this.randomizeTarget = this.shadowRoot.querySelector("#change-target");
     this.selectSource = this.shadowRoot.querySelector("#search-source");
@@ -70,25 +69,22 @@ class MDBCGameState extends HTMLElement {
     this.sourceText = this.shadowRoot.querySelector("#text-source");
     this.targetText = this.shadowRoot.querySelector("#text-target");
     this.newGame = this.shadowRoot.querySelector("#new-game");
+    this.sourceObj = { name: null, img_path: null };
+    this.targetObj = { name: null, img_path: null };
+    this.currentObj = { name: null, img_path: null };
     this.attachCallbacks = this.attachCallbacks.bind(this);
     this.attachCallbacks();
     this.render();
   }
 
   attachCallbacks() {
-    this.randomizeSource.onclick = dispatch(this, "selectedRandomSource");
-    this.randomizeTarget.onclick = dispatch(this, "selectedRandomTarget");
-    this.selectSource.onclick = dispatch(
-      this,
-      "selectedSource",
-      this.sourceText.value
-    );
-    this.selectTarget.onclick = dispatch(
-      this,
-      "selectedSource",
-      this.targetText.value
-    );
-    this.newGame.onclick = dispatch(this, "selectedNewGame");
+    this.randomizeSource.onclick = () => dispatch(this, "selectedRandomSource");
+    this.randomizeTarget.onclick = () => dispatch(this, "selectedRandomTarget");
+    this.selectSource.onclick = () =>
+      dispatch(this, "selectedSource", this.sourceText.value);
+    this.selectTarget.onclick = () =>
+      dispatch(this, "selectedSource", this.targetText.value);
+    this.newGame.onclick = () => dispatch(this, "selectedNewGame");
   }
 
   disconnectedCallback() {
@@ -145,7 +141,8 @@ class MDBCGameState extends HTMLElement {
   }
 
   render() {
-    if (!this.sourceObj || !this.currentObj || !this.targetObj) return;
+    if (!(this.sourceObj.name && this.currentObj.name && this.targetObj.name))
+      return;
     this.renderSource();
     this.renderCurrent();
     this.renderTarget();
