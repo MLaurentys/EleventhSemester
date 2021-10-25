@@ -60,78 +60,82 @@ class MDBCGameState extends HTMLElement {
     this.sourceCard = this.shadowRoot.querySelector("#source-card");
     this.currentCard = this.shadowRoot.querySelector("#current-card");
     this.targetCard = this.shadowRoot.querySelector("#target-card");
-    this.startObj = null;
-    this.targetObj = null;
-    this.selectedObj = null;
-    this.currentPath = [];
-    this.browsing = "movies";
-    this.page = 0;
-    this.loadAsync = this.loadAsync.bind(this);
+    this.sourceObj = { name: null, img_path: null };
+    this.targetObj = { name: null, img_path: null };
+    this.currentObj = { name: null, img_path: null };
+    this.randomizeSource = this.shadowRoot.querySelector("#change-source");
+    this.randomizeTarget = this.shadowRoot.querySelector("#change-target");
+    this.selectSource = this.shadowRoot.querySelector("#search-source");
+    this.selectTarget = this.shadowRoot.querySelector("#search-target");
+    this.sourceText = this.shadowRoot.querySelector("#text-source");
+    this.targetText = this.shadowRoot.querySelector("#text-target");
+    this.newGame = this.shadowRoot.querySelector("#new-game");
     this.attachCallbacks = this.attachCallbacks.bind(this);
     this.attachCallbacks();
-    this.loadAsync();
+    this.render();
   }
 
   attachCallbacks() {
-    this.shadowRoot.querySelector("#change-source").onclick = dispatch(
-      this,
-      "selectedRandomSource",
-      this.shadowRoot.querySelector("#text-source").value
-    );
-    this.shadowRoot.querySelector("#change-target").onclick = dispatch(
-      this,
-      "selectedRandomTarget"
-    );
-    this.shadowRoot.querySelector("#search-source").onclick = dispatch(
+    this.randomizeSource.onclick = dispatch(this, "selectedRandomSource");
+    this.randomizeTarget.onclick = dispatch(this, "selectedRandomTarget");
+    this.selectSource.onclick = dispatch(
       this,
       "selectedSource",
-      this.parsedData[detail].id
+      this.sourceText.value
     );
-    this.shadowRoot.querySelector("#search-target").onclick = dispatch(
+    this.selectTarget.onclick = dispatch(
       this,
       "selectedSource",
-      this.shadowRoot.querySelector("#text-target").value
+      this.targetText.value
     );
-    this.shadowRoot.querySelector("#new-game").onclick = () => {
-      dispatch(this, "selectedNewGame");
-    };
+    this.newGame.onclick = dispatch(this, "selectedNewGame");
   }
 
-  async loadAsync() {
-    this.targetObj = await loadRandomPerson();
-    this.startObj = await loadRandomPerson();
-    this.selectedObj = this.startObj;
-    this.render();
+  disconnectedCallback() {
+    [
+      this.randomizeSource,
+      this.randomizeTarget,
+      this.selectSource,
+      this.selectTarget,
+      this.newGame,
+    ].forEach((bt) => (bt.onclick = null));
   }
 
-  disconnectedCallback() {}
-
-  attributeChangedCallback(name) {
+  attributeChangedCallback(name, oldVal, newVal) {
+    if (oldVal === newVal) return;
+    console.log("rodou");
     switch (name) {
-      case "source":
-        this.sourceObj = {};
+      case "data-source":
+        [this.sourceObj.name, this.sourceObj.img_path] = newVal.split(";");
+        this.renderSource();
         break;
-
+      case "data-current":
+        [this.currentObj.name, this.currentObj.img_path] = newVal.split(";");
+        this.renderCurrent();
+        break;
+      case "data-target":
+        [this.targetObj.name, this.targetObj.img_path] = newVal.split(";");
+        this.renderTarget();
+        break;
       default:
         break;
     }
-    this.render();
   }
 
   static get observedAttributes() {
-    return ["source", "current", "target"];
+    return ["data-source", "data-current", "data-target"];
   }
 
   renderSource() {
-    this.sourceCard.dataset.label = `Start: ${this.startObj.name}`;
-    this.sourceCard.dataset.alt = `Photo of ${this.startObj.name}`;
-    this.sourceCard.dataset.source = `${IMAGES_ENDPOINT}${this.startObj.img_path}`;
+    this.sourceCard.dataset.label = `Start: ${this.sourceObj.name}`;
+    this.sourceCard.dataset.alt = `Photo of ${this.sourceObj.name}`;
+    this.sourceCard.dataset.source = `${IMAGES_ENDPOINT}${this.sourceObj.img_path}`;
   }
 
   renderCurrent() {
-    this.currentCard.dataset.label = `Current: ${this.selectedObj.name}`;
-    this.currentCard.dataset.alt = `Photo of ${this.selectedObj.name}`;
-    this.currentCard.dataset.source = `${IMAGES_ENDPOINT}${this.selectedObj.img_path}`;
+    this.currentCard.dataset.label = `Current: ${this.currentObj.name}`;
+    this.currentCard.dataset.alt = `Photo of ${this.currentObj.name}`;
+    this.currentCard.dataset.source = `${IMAGES_ENDPOINT}${this.currentObj.img_path}`;
   }
 
   renderTarget() {
@@ -141,14 +145,7 @@ class MDBCGameState extends HTMLElement {
   }
 
   render() {
-    //note it alternates Person -> Movie -> Person
-    if (
-      this.currentPath.length === 0 ||
-      this.currentPath.slice(-1)[0] !== this.selectedObj.id
-    ) {
-      this.currentPath.push(this.selectedObj.id);
-    }
-    if (!this.startObj || !this.selectedObj || !this.targetObj) return;
+    if (!this.sourceObj || !this.currentObj || !this.targetObj) return;
     this.renderSource();
     this.renderCurrent();
     this.renderTarget();
