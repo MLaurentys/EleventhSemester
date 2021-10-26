@@ -1,6 +1,6 @@
 //import cytoscape from 'https://cdn.jsdelivr.net/npm/cytoscape@3.19.1/dist/cytoscape.esm.min.js';
-import { API_DATA } from "../env.js";
-import { API_ENDPOINT, IMAGES_ENDPOINT } from "../consts.js";
+import { API_DATA } from '../env.js';
+import { API_ENDPOINT, IMAGES_ENDPOINT } from '../consts.js';
 import {
   loadMovieById,
   loadPeopleOptions,
@@ -8,9 +8,9 @@ import {
   loadPersonByName,
   loadPersonById,
   loadRandomPerson,
-} from "../utils.js";
+} from '../utils.js';
 
-const template = document.createElement("template");
+const template = document.createElement('template');
 template.innerHTML = `
 <style>
   @import "https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css";
@@ -25,18 +25,18 @@ template.innerHTML = `
 class MDBCApp extends HTMLElement {
   constructor() {
     super();
-    this.attachShadow({ mode: "open" });
+    this.attachShadow({ mode: 'open' });
     this.shadowRoot.appendChild(template.content.cloneNode(true));
-    this.stateHandler = this.shadowRoot.querySelector("#state");
-    this.btPrev = this.shadowRoot.querySelector("#prevBt");
-    this.btNext = this.shadowRoot.querySelector("#nextBt");
-    this.optionsElement = this.shadowRoot.querySelector("mdbc-options");
+    this.stateHandler = this.shadowRoot.querySelector('#state');
+    this.btPrev = this.shadowRoot.querySelector('#prevBt');
+    this.btNext = this.shadowRoot.querySelector('#nextBt');
+    this.optionsElement = this.shadowRoot.querySelector('mdbc-options');
     this.source = null;
     this.target = null;
     this.current = null;
     this.optionsList = null;
     this.currentPath = [];
-    this.browsing = "movies";
+    this.browsing = 'movies';
     this.page = 0;
     this.btPrev.onclick = () => {
       if (this.page > 0) {
@@ -49,43 +49,44 @@ class MDBCApp extends HTMLElement {
       this.renderOptions();
     };
     this.loadAsync = this.loadAsync.bind(this);
+    this.loadGame = this.loadGame.bind(this);
     this.renderStatus = this.renderStatus.bind(this);
     this.renderOptions = this.renderOptions.bind(this);
     this.addEventListeners = this.addEventListeners.bind(this);
     this.restartGame = this.restartGame.bind(this);
     this.checkWonGame = this.checkWonGame.bind(this);
     this.addEventListeners();
-    this.loadAsync();
+    this.loadGame();
   }
 
   addEventListeners() {
     const addListener = this.shadowRoot.addEventListener;
-    addListener("optionSelected", this.handleOptionSelected);
-    addListener("selectedRandomSource", async () => {
+    addListener('optionSelected', this.handleOptionSelected);
+    addListener('selectedRandomSource', async () => {
       this.source = await loadRandomPerson();
       this.current = this.source;
       this.checkWonGame();
       this.restartGame();
       this.render();
     });
-    addListener("selectedRandomTarget", async () => {
+    addListener('selectedRandomTarget', async () => {
       this.target = await loadRandomPerson();
       this.checkWonGame();
       this.render();
     });
-    addListener("selectedSource", async (name) => {
-      this.source = await loadPersonByName(name);
+    addListener('selectedSource', async ({ detail }) => {
+      this.source = await loadPersonByName(detail);
       this.current = this.source;
       this.checkWonGame();
       this.restartGame();
       this.render();
     });
-    addListener("selectedTarget", async (name) => {
+    addListener('selectedTarget', async (name) => {
       this.target = await loadPersonByName(name);
       this.checkWonGame();
       this.render();
     });
-    addListener("selectedNewGame", async () => {
+    addListener('selectedNewGame', async () => {
       this.source = await loadRandomPerson();
       this.current = this.source;
       this.target = await loadRandomPerson();
@@ -101,6 +102,22 @@ class MDBCApp extends HTMLElement {
     this.optionsList = await loadMovieOptions(this.source.id);
   }
 
+  async loadGame() {
+    const challenge = JSON.parse(
+      localStorage.getItem('movies_cartographer_challenge')
+    );
+    if (challenge) {
+      localStorage.removeItem('movies_cartographer_challenge');
+      this.source = await loadPersonById(challenge.source);
+      this.target = await loadPersonById(challenge.target);
+      this.current = this.source;
+      this.optionsList = await loadMovieOptions(this.source.id);
+      this.render();
+    } else {
+      this.loadAsync();
+    }
+  }
+
   async loadAsync() {
     this.target = await loadRandomPerson();
     this.source = await loadRandomPerson();
@@ -111,11 +128,11 @@ class MDBCApp extends HTMLElement {
 
   checkWonGame = () => {
     if (this.current.id !== this.target.id) return false;
-    alert("Congratulations!");
-    const previousRuns = localStorage.getItem("movies_cartographer") || "[]";
+    alert('Congratulations!');
+    const previousRuns = localStorage.getItem('movies_cartographer') || '[]';
     let runs = JSON.parse(previousRuns);
     runs.push(this.currentPath);
-    localStorage.setItem("movies_cartographer", JSON.stringify(runs));
+    localStorage.setItem('movies_cartographer', JSON.stringify(runs));
     return true;
   };
 
@@ -123,7 +140,7 @@ class MDBCApp extends HTMLElement {
     this.page = 0;
     if (this.checkWonGame()) return;
     let newObj, newList;
-    if (this.browsing === "movies") {
+    if (this.browsing === 'movies') {
       newObj = await loadMovieById(detail);
       newList = await loadPeopleOptions(newObj.id);
     } else {
@@ -133,10 +150,10 @@ class MDBCApp extends HTMLElement {
     if (newObj.name && newList.length > 0) {
       this.optionsList = newList;
       this.current = newObj;
-      if (this.browsing === "movies") this.browsing = "people";
-      else this.browsing = "movies";
+      if (this.browsing === 'movies') this.browsing = 'people';
+      else this.browsing = 'movies';
     } else {
-      alert("Search unsuccesful. Select another");
+      alert('Search unsuccesful. Select another');
     }
     this.render();
   };

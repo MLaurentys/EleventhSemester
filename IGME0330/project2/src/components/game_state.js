@@ -1,9 +1,9 @@
 //import cytoscape from 'https://cdn.jsdelivr.net/npm/cytoscape@3.19.1/dist/cytoscape.esm.min.js';
-import { API_DATA } from "../env.js";
-import { API_ENDPOINT, IMAGES_ENDPOINT } from "../consts.js";
-import { loadPersonByName, loadRandomPerson } from "../utils.js";
+import { API_DATA } from '../env.js';
+import { API_ENDPOINT, IMAGES_ENDPOINT } from '../consts.js';
+import { loadPersonByName, loadRandomPerson } from '../utils.js';
 
-const template = document.createElement("template");
+const template = document.createElement('template');
 template.innerHTML = `
 <style>
   @import "https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css";
@@ -43,8 +43,6 @@ template.innerHTML = `
 `;
 
 function dispatch(element, eventName, detail) {
-  console.log("DISPATCHED");
-  console.log(eventName);
   element.dispatchEvent(
     new CustomEvent(eventName, {
       composed: true,
@@ -57,18 +55,18 @@ function dispatch(element, eventName, detail) {
 class MDBCGameState extends HTMLElement {
   constructor() {
     super();
-    this.attachShadow({ mode: "open" });
+    this.attachShadow({ mode: 'open' });
     this.shadowRoot.appendChild(template.content.cloneNode(true));
-    this.sourceCard = this.shadowRoot.querySelector("#source-card");
-    this.currentCard = this.shadowRoot.querySelector("#current-card");
-    this.targetCard = this.shadowRoot.querySelector("#target-card");
-    this.randomizeSource = this.shadowRoot.querySelector("#change-source");
-    this.randomizeTarget = this.shadowRoot.querySelector("#change-target");
-    this.selectSource = this.shadowRoot.querySelector("#search-source");
-    this.selectTarget = this.shadowRoot.querySelector("#search-target");
-    this.sourceText = this.shadowRoot.querySelector("#text-source");
-    this.targetText = this.shadowRoot.querySelector("#text-target");
-    this.newGame = this.shadowRoot.querySelector("#new-game");
+    this.sourceCard = this.shadowRoot.querySelector('#source-card');
+    this.currentCard = this.shadowRoot.querySelector('#current-card');
+    this.targetCard = this.shadowRoot.querySelector('#target-card');
+    this.randomizeSource = this.shadowRoot.querySelector('#change-source');
+    this.randomizeTarget = this.shadowRoot.querySelector('#change-target');
+    this.selectSource = this.shadowRoot.querySelector('#search-source');
+    this.selectTarget = this.shadowRoot.querySelector('#search-target');
+    this.sourceText = this.shadowRoot.querySelector('#text-source');
+    this.targetText = this.shadowRoot.querySelector('#text-target');
+    this.newGame = this.shadowRoot.querySelector('#new-game');
     this.sourceObj = { name: null, img_path: null };
     this.targetObj = { name: null, img_path: null };
     this.currentObj = { name: null, img_path: null };
@@ -78,13 +76,13 @@ class MDBCGameState extends HTMLElement {
   }
 
   attachCallbacks() {
-    this.randomizeSource.onclick = () => dispatch(this, "selectedRandomSource");
-    this.randomizeTarget.onclick = () => dispatch(this, "selectedRandomTarget");
+    this.randomizeSource.onclick = () => dispatch(this, 'selectedRandomSource');
+    this.randomizeTarget.onclick = () => dispatch(this, 'selectedRandomTarget');
     this.selectSource.onclick = () =>
-      dispatch(this, "selectedSource", this.sourceText.value);
+      dispatch(this, 'selectedSource', this.sourceText.value);
     this.selectTarget.onclick = () =>
-      dispatch(this, "selectedSource", this.targetText.value);
-    this.newGame.onclick = () => dispatch(this, "selectedNewGame");
+      dispatch(this, 'selectedTarget', this.targetText.value);
+    this.newGame.onclick = () => dispatch(this, 'selectedNewGame');
   }
 
   disconnectedCallback() {
@@ -99,18 +97,17 @@ class MDBCGameState extends HTMLElement {
 
   attributeChangedCallback(name, oldVal, newVal) {
     if (oldVal === newVal) return;
-    console.log("rodou");
     switch (name) {
-      case "data-source":
-        [this.sourceObj.name, this.sourceObj.img_path] = newVal.split(";");
+      case 'data-source':
+        [this.sourceObj.name, this.sourceObj.img_path] = newVal.split(';');
         this.renderSource();
         break;
-      case "data-current":
-        [this.currentObj.name, this.currentObj.img_path] = newVal.split(";");
+      case 'data-current':
+        [this.currentObj.name, this.currentObj.img_path] = newVal.split(';');
         this.renderCurrent();
         break;
-      case "data-target":
-        [this.targetObj.name, this.targetObj.img_path] = newVal.split(";");
+      case 'data-target':
+        [this.targetObj.name, this.targetObj.img_path] = newVal.split(';');
         this.renderTarget();
         break;
       default:
@@ -119,7 +116,7 @@ class MDBCGameState extends HTMLElement {
   }
 
   static get observedAttributes() {
-    return ["data-source", "data-current", "data-target"];
+    return ['data-source', 'data-current', 'data-target'];
   }
 
   renderSource() {

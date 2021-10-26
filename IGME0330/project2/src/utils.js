@@ -1,8 +1,8 @@
-import { API_DATA } from "./env.js";
-import { API_ENDPOINT, IMAGES_ENDPOINT } from "./consts.js";
+import { API_DATA } from './env.js';
+import { API_ENDPOINT, IMAGES_ENDPOINT } from './consts.js';
 
 export function createCard(src, alt, label) {
-  const template = document.createElement("template");
+  const template = document.createElement('template');
   if (src) {
     template.innerHTML = `<mdbc-card
     data-source=${src}
@@ -19,7 +19,7 @@ export function createCard(src, alt, label) {
 }
 
 export async function loadMovieById(id) {
-  const uri = API_ENDPOINT + "movie/" + id + "?api_key=" + API_DATA.API_KEY;
+  const uri = API_ENDPOINT + 'movie/' + id + '?api_key=' + API_DATA.API_KEY;
   try {
     const movieInfo = await loadData(uri);
     return {
@@ -28,13 +28,13 @@ export async function loadMovieById(id) {
       id: movieInfo.id,
     };
   } catch {
-    console.info("Could not load movie info");
+    console.info('Could not load movie info');
     return {};
   }
 }
 
 export async function loadPersonById(id) {
-  const uri = API_ENDPOINT + "person/" + id + "?api_key=" + API_DATA.API_KEY;
+  const uri = API_ENDPOINT + 'person/' + id + '?api_key=' + API_DATA.API_KEY;
   try {
     const personInfo = await loadData(uri);
     return {
@@ -43,14 +43,14 @@ export async function loadPersonById(id) {
       id: personInfo.id,
     };
   } catch {
-    console.info("Could not load person info by id");
+    console.info('Could not load person info by id');
     return {};
   }
 }
 
 export async function loadPeopleOptions(id) {
   const uri =
-    API_ENDPOINT + "movie/" + id + "/credits?api_key=" + API_DATA.API_KEY;
+    API_ENDPOINT + 'movie/' + id + '/credits?api_key=' + API_DATA.API_KEY;
   try {
     const optionsInfo = await loadData(uri);
     return optionsInfo.cast.map((option) => {
@@ -61,7 +61,7 @@ export async function loadPeopleOptions(id) {
       };
     });
   } catch {
-    console.info("Could not load people options by id");
+    console.info('Could not load people options by id');
     return [];
   }
 }
@@ -81,7 +81,7 @@ export async function loadMovieOptions(id) {
       };
     });
   } catch {
-    console.info("Could not load movie options");
+    console.info('Could not load movie options');
     return [];
   }
 }
@@ -89,9 +89,9 @@ export async function loadMovieOptions(id) {
 export async function loadPersonByName(name) {
   const uri =
     API_ENDPOINT +
-    "search/person?api_key=" +
+    'search/person?api_key=' +
     API_DATA.API_KEY +
-    "&query=" +
+    '&query=' +
     encodeURIComponent(name);
   try {
     const personInfo = (await loadData(uri)).results[0];
@@ -101,7 +101,7 @@ export async function loadPersonByName(name) {
       id: personInfo.id,
     };
   } catch {
-    console.info("Could not load person by its name");
+    console.info('Could not load person by its name');
     return [];
   }
 }
@@ -119,6 +119,7 @@ function getRandomId() {
   const min = 50000;
   return Math.floor(Math.random() * (max - min) + min);
 }
+
 export async function loadRandomPerson() {
   let i = 0;
   while (i < 10) {
@@ -131,6 +132,17 @@ export async function loadRandomPerson() {
     } catch {}
   }
   alert(
-    "Not able to load in 10 attempts. Please hit reload icon to try again."
+    'Not able to load in 10 attempts. Please hit reload icon to try again.'
   );
+}
+
+export function playCustomChallenge(customChallenge) {
+  localStorage.setItem(
+    'movies_cartographer_challenge',
+    JSON.stringify({
+      source: customChallenge.start,
+      target: customChallenge.end,
+    })
+  );
+  window.location.href = './app.html';
 }

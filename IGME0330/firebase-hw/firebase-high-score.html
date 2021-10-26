@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>High Score App</title>
+    <style>
+      * {
+        font-family: monospace;
+        font-size: 1.2em;
+      }
+      #scoreElement {
+        font-size: 3em;
+        width: 5em;
+        height: 2.5em;
+        color: white;
+        background-color: black;
+        border: 5px solid gray;
+        text-align: center;
+        padding-top: 1em;
+      }
+    </style>
+  </head>
+  <body>
+    <p id="scoreElement">0</p>
+    <p>Name --> <input type="text" value="MADMAX" id="nameField" /></p>
+    <button id="clickMeButton">Click Me!</button>
+    <button id="saveScoreButton">Save High Score</button>
+
+    <script type="module">
+      /* #1 - The Firebase setup code goes here  - both imports, `firebaseConfig` and `app` */
+      import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.1.3/firebase-app.js';
+      import {
+        getDatabase,
+        ref,
+        set,
+        push,
+        onValue,
+      } from 'https://www.gstatic.com/firebasejs/9.1.3/firebase-database.js';
+      const firebaseConfig = {
+        apiKey: 'AIzaSyCXRWYUQrJPuYiBIjcrEe1JRESsdAV9ULM',
+        authDomain: 'high-scores-65364.firebaseapp.com',
+        projectId: 'high-scores-65364',
+        storageBucket: 'high-scores-65364.appspot.com',
+        messagingSenderId: '609878290991',
+        appId: '1:609878290991:web:72a5cfb5400a1e8c654cda',
+      };
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      console.log(app); // make sure firebase is loaded
+
+      /* #2 - Also bring over your `writeHighScoreData()` helper function */
+      function writeHighScoreData(userId, game, score) {
+        const db = getDatabase();
+        const scoresRef = ref(db, 'scores');
+        const newScoreRef = push(scoresRef, {
+          userId,
+          game,
+          score,
+        });
+        console.log('newScoreRef', newScoreRef.key);
+      }
+      function writeHighScoreData2(userId, game, score) {
+        const db = getDatabase();
+        set(ref(db, 'scores2/' + userId), {
+          game,
+          score,
+        });
+      }
+      /* #3 - Here's the new code for our clicker "game" */
+
+      let score = 0;
+      clickMeButton.onclick = (_) => {
+        score++;
+        scoreElement.innerText = score;
+      };
+      saveScoreButton.onclick = (_) => {
+        writeHighScoreData(nameField.value, 'Clicktastic', score);
+      };
+    </script>
+  </body>
+</html>

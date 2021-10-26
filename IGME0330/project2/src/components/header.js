@@ -46,7 +46,9 @@ h1{
         </a>
         <a class="navbar-item" id="item-2" href="./favorites.html"> Favorites
         </a>
-        <a class="navbar-item" id="item-3" href="./sources.html"> Documentation
+        <a class="navbar-item" id="item-3" href="./community.html"> Community
+        </a>
+        <a class="navbar-item" id="item-4" href="./sources.html"> Documentation
         </a>
       </div>
     </div>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Firebase Admin</title>
+  </head>
+  <body>
+    <h1>High Scores</h1>
+    <ul id="scoresList">
+      <li id="no-data">No data yet!</li>
+    </ul>
+
+    <script type="module">
+      /* #1 - The Firebase setup code goes here  - both imports, `firebaseConfig` and `app` */
+      import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.1.3/firebase-app.js';
+      import {
+        getDatabase,
+        ref,
+        set,
+        push,
+        onValue,
+      } from 'https://www.gstatic.com/firebasejs/9.1.3/firebase-database.js';
+      const firebaseConfig = {
+        apiKey: 'AIzaSyCXRWYUQrJPuYiBIjcrEe1JRESsdAV9ULM',
+        authDomain: 'high-scores-65364.firebaseapp.com',
+        projectId: 'high-scores-65364',
+        storageBucket: 'high-scores-65364.appspot.com',
+        messagingSenderId: '609878290991',
+        appId: '1:609878290991:web:72a5cfb5400a1e8c654cda',
+      };
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      console.log(app); // make sure firebase is loaded
+
+      // #2 NEW STUFF
+      const db = getDatabase();
+      const scoresRef = ref(db, 'scores');
+      const scoresList = document.getElementById('scoresList');
+      let noData = true;
+      function removeNoData() {
+        noData = false;
+        scoresList.innerHTML = '';
+      }
+
+      function createScoreElement(childKey, childData) {
+        const li = document.createElement('li');
+        li.innerHTML = `${childData.userId} - ${childData.game} - ${childData.score}`;
+        li.setAttribute('data-key', childKey);
+        return li;
+      }
+
+      function scoresChanged(snapshot) {
+        snapshot.forEach((score) => {
+          if (noData) {
+            removeNoData();
+          }
+          const childKey = score.key;
+          const childData = score.val();
+          scoresList.appendChild(createScoreElement(childKey, childData));
+          console.log(childKey, childData);
+        });
+      }
+
+      onValue(scoresRef, scoresChanged);
+    </script>
+  </body>
+</html>
