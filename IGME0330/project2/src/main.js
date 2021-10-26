@@ -7,6 +7,7 @@ import { MDBCFavorites } from './components/favorites.js';
 import { MDBCGameState } from './components/game_state.js';
 import { MDBCCommunity } from './components/community.js';
 import { MDBCChallenge } from './components/challenge.js';
+import { MDBCRun } from './components/run.js';
 
 const init = () => {
   const url = 'data/all.json';
@@ -19,6 +20,7 @@ const init = () => {
   customElements.define('mdbc-game-state', MDBCGameState);
   customElements.define('mdbc-community', MDBCCommunity);
   customElements.define('mdbc-challenge', MDBCChallenge);
+  customElements.define('mdbc-run', MDBCRun);
 };
 
 window.onload = init;

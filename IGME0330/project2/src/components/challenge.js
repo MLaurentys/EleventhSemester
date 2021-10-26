@@ -1,7 +1,5 @@
-import { API_ENDPOINT, IMAGES_ENDPOINT } from '../consts.js';
-import { createCard } from '../utils.js';
-
-import { loadMovieById, loadPersonById } from '../utils.js';
+import { IMAGES_ENDPOINT } from '../consts.js';
+import { loadMovieById, loadPersonById, createCard } from '../utils.js';
 
 const template = document.createElement('template');
 template.innerHTML = `
@@ -31,7 +29,7 @@ template.innerHTML = `
 <div id="challenge">
   <div class="fixed-card" id="source"></div>
   <div class="fixed-card" id="target"></div>
-  <div disabled>
+  <div >
     <p class="has-text-weight-medium" id="message"></p>
     <div class="tabs">
       <ul id="hints">

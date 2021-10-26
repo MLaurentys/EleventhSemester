@@ -66,7 +66,7 @@ class MDBCApp extends HTMLElement {
       this.source = await loadRandomPerson();
       this.current = this.source;
       this.checkWonGame();
-      this.restartGame();
+      await this.restartGame();
       this.render();
     });
     addListener('selectedRandomTarget', async () => {
@@ -78,11 +78,11 @@ class MDBCApp extends HTMLElement {
       this.source = await loadPersonByName(detail);
       this.current = this.source;
       this.checkWonGame();
-      this.restartGame();
+      await this.restartGame();
       this.render();
     });
-    addListener('selectedTarget', async (name) => {
-      this.target = await loadPersonByName(name);
+    addListener('selectedTarget', async ({ detail }) => {
+      this.target = await loadPersonByName(detail);
       this.checkWonGame();
       this.render();
     });
@@ -97,7 +97,7 @@ class MDBCApp extends HTMLElement {
   }
 
   async restartGame() {
-    this.currentPath = [];
+    this.currentPath = [this.source.id];
     this.page = 0;
     this.optionsList = await loadMovieOptions(this.source.id);
   }
@@ -126,7 +126,7 @@ class MDBCApp extends HTMLElement {
     this.render();
   }
 
-  checkWonGame = () => {
+  checkWonGame() {
     if (this.current.id !== this.target.id) return false;
     alert('Congratulations!');
     const previousRuns = localStorage.getItem('movies_cartographer') || '[]';
@@ -134,9 +134,10 @@ class MDBCApp extends HTMLElement {
     runs.push(this.currentPath);
     localStorage.setItem('movies_cartographer', JSON.stringify(runs));
     return true;
-  };
+  }
 
   handleOptionSelected = async ({ detail }) => {
+    this.currentPath.push(detail);
     this.page = 0;
     if (this.checkWonGame()) return;
     let newObj, newList;
