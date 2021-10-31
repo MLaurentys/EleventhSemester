@@ -89,9 +89,7 @@ class MDBCChallenge extends HTMLElement {
   displayHint(index) {
     this.hint.innerHTML = '';
     const tabs = Array.from(this.activeTabs).sort((a, b) => a - b);
-    console.log(tabs);
     tabs.forEach((tab) => {
-      console.log(tab);
       this.hint.appendChild(this.hintsEls[tab]);
     });
   }
@@ -102,6 +100,11 @@ class MDBCChallenge extends HTMLElement {
       const a = document.createElement('a');
       a.innerHTML = `Hint #${index + 1}`;
       li.appendChild(a);
+      li.classList.add(
+        'has-background-warning',
+        'mr-1',
+        'has-text-danger-dark'
+      );
       a.onclick = (evt) => {
         li.classList.toggle('is-active');
         if (this.activeTabs.has(index)) this.activeTabs.delete(index);
@@ -114,7 +117,6 @@ class MDBCChallenge extends HTMLElement {
 
   async makeHints() {
     for (let [index, el] of this.path.entries()) {
-      console.log(el);
       const hint = await makeHint(el, index);
       this.hintsEls.push(hint);
     }

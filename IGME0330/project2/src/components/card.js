@@ -7,7 +7,7 @@ template.innerHTML = `
 <div class="card-image">
     <figure class="image is-3by4"></figure>
 </div>
-<div class="card-content" style="height: 2em; padding: 0">
+<div class="card-content" style="padding: 0">
     <p id="label-source" class="card-content" style="padding: 0; text-align: center">
     </p>
 </div>
@@ -20,6 +20,7 @@ class MDBCCard extends HTMLElement {
     this.shadowRoot.appendChild(template.content.cloneNode(true));
     this.image = this.shadowRoot.querySelector('figure');
     this.label = this.shadowRoot.querySelector('p');
+    this.render = this.render.bind(this);
   }
 
   connectedCallback() {
@@ -39,27 +40,28 @@ class MDBCCard extends HTMLElement {
     return ['data-source', 'data-label', 'data-alt'];
   }
 
+  renderLoading() {
+    this.label.innerHTML = 'Loading...';
+    const img = document.createElement('img');
+    img.src = 'https://people.rit.edu/~mtl9706/330/project2/images/loading.jpg';
+    img.alt = 'Loading picture';
+    this.image.appendChild(img);
+  }
+
   render() {
-    // the following line is necessary as the card is repositioned and re-renders
-    //  sometimes before reaching its final position
-    if (
-      !this.dataset.label ||
-      !this.dataset.source ||
-      this.image.hasChildNodes()
-    )
-      return;
+    if (!this.dataset.label || !this.dataset.source)
+      return this.renderLoading();
+    this.image.innerHTML = '';
     this.label.innerHTML = this.dataset.label;
+    const img = document.createElement('img');
     if (this.dataset.source.slice(-4) === 'null') {
-      const alt = document.createElement('p');
-      alt.innerHTML =
-        'Profile of ' + this.dataset.label + ' does not have a photo';
-      this.image.appendChild(alt);
+      img.src =
+        'https://people.rit.edu/~mtl9706/330/project2/images/no_photo.jpg';
     } else {
-      const img = document.createElement('img');
       img.src = this.dataset.source;
-      img.alt = 'Photo of ' + this.dataset.alt;
-      this.image.appendChild(img);
     }
+    img.alt = 'Photo of ' + this.dataset.alt;
+    this.image.appendChild(img);
   }
 }
 

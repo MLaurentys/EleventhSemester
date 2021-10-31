@@ -1,5 +1,28 @@
 import { IMAGES_ENDPOINT } from '../consts.js';
-import { loadMovieById, loadPersonById, createCard } from '../utils.js';
+import {
+  loadMovieById,
+  loadPersonById,
+  createCard,
+  saveExternal,
+} from '../utils.js';
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.1.3/firebase-app.js';
+import {
+  getDatabase,
+  ref,
+  set,
+  push,
+  onValue,
+} from 'https://www.gstatic.com/firebasejs/9.1.3/firebase-database.js';
+
+const firebaseConfig = {
+  apiKey: 'AIzaSyDX4_D8zn-tbarc1cGGKS-kb7X-R3vTvvM',
+  authDomain: 'moviescartographer.firebaseapp.com',
+  databaseURL: 'https://moviescartographer-default-rtdb.firebaseio.com',
+  projectId: 'moviescartographer',
+  storageBucket: 'moviescartographer.appspot.com',
+  messagingSenderId: '995808201327',
+  appId: '1:995808201327:web:a09623865b3f4d71069b9a',
+};
 
 const template = document.createElement('template');
 template.innerHTML = `
@@ -14,11 +37,13 @@ template.innerHTML = `
   height: 50%;
 }
 </style>
-<h1 class="is-size-1 has-text-weight-normal">The runs you completed so far:</h1>
-<h2 class="is-size-2" id="no-runs"></h2>
-<ol>
-</ol>
-<button id="clear">Clear history</button>
+<div class="container">
+  <button class="button is-danger is-light mt-2 mb-3" id="clear">Clear history</button>
+  <h1 class="is-size-1 has-text-weight-normal">The runs you completed so far:</h1>
+  <h2 class="is-size-2" id="no-runs"></h2>
+  <ol>
+  </ol>
+</div>
 `;
 class MDBCFavorites extends HTMLElement {
   constructor() {
@@ -31,44 +56,23 @@ class MDBCFavorites extends HTMLElement {
       this.render();
     };
     this.runs = [];
+    this.app = initializeApp(firebaseConfig);
+    this.db = getDatabase();
+    this.challengesRef = ref(this.db, 'challenges');
     this.list = this.shadowRoot.querySelector('ol');
     this.createRuns = this.createRuns.bind(this);
     this.createRuns();
+    this.addEventListener('saveExternal', ({ detail }) =>
+      saveExternal(this.challengesRef, detail)
+    );
   }
 
-  async makeRunSteps(run) {
-    let ul = document.createElement('ul');
-    console.log(run);
-    for (let [index, step] of run.entries()) {
-      let li = document.createElement('li');
-      li.classList.add('fixed-size');
-      let card;
-      if (index % 2 === 0) {
-        const person = await loadPersonById(step);
-        card = createCard(
-          `${IMAGES_ENDPOINT}${person.img_path}`,
-          'Photo of ' + person.name,
-          person.name
-        );
-      } else {
-        const movie = await loadMovieById(step);
-        card = createCard(
-          `${IMAGES_ENDPOINT}${movie.img_path}`,
-          'Photo of ' + movie.name,
-          movie.name
-        );
-      }
-      li.appendChild(card);
-      ul.appendChild(li);
-    }
-    console.log(ul);
-    return ul;
-  }
-
-  makeStepsV2(run, index) {
+  async makeRunSteps(run, index) {
     const template = document.createElement('template');
     template.innerHTML = `
-      <mdbc-run data-run=[${run}] data-order=${index + 1}></mdbc-run>
+      <mdbc-run data-run=[${run}] data-order=${
+      index + 1
+    } class="mb-3"></mdbc-run>
     `;
     return template.content.cloneNode(true);
   }
@@ -77,7 +81,7 @@ class MDBCFavorites extends HTMLElement {
     const saved = JSON.parse(localStorage.getItem('movies_cartographer'));
     if (!saved) return;
     for (const [ind, save] of saved.entries()) {
-      const runEl = await this.makeStepsV2(save, ind);
+      const runEl = await this.makeRunSteps(save, ind);
       this.runs.push(runEl);
     }
     this.render();

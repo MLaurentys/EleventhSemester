@@ -17,21 +17,20 @@ template.innerHTML = `
 
 <section class="hero">
     <div class="hero-body">
-        <p class="title mr-3" id="run-number" style="display:inline"></p>
-        <ul></ul>
+        <p class="title mr-3 mb-2" id="run-number" style="display:inline"></p>
+        <button class="button is-warning is-light mb-3" id="challenge">Share!</button>
+        <ul class="columns is-multiline"></ul>
     </div>
 </section>
 `;
+
 class MDBCRun extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
     this.shadowRoot.appendChild(template.content.cloneNode(true));
-    console.log(this.dataset);
-    this.shadowRoot.querySelector('section').classList.add('is-primary');
-    // this.shadowRoot.querySelector('section').classList.add(`
-    //     ${Number(this.dataset.order) % 2 === 0 ? 'is-primary' : 'is-link'}
-    // `);
+    const style = `${+this.dataset.order % 2 === 0 ? 'is-primary' : 'is-link'}`;
+    this.shadowRoot.querySelector('section').classList.add(style);
     this.shadowRoot.querySelector(
       '#run-number'
     ).textContent = `Run ${this.dataset.order}`;
@@ -39,13 +38,31 @@ class MDBCRun extends HTMLElement {
     this.steps = [];
     this.makeRunSteps = this.makeRunSteps.bind(this);
     this.makeRunSteps();
+    this.shadowRoot.querySelector('#challenge').onclick = () => {
+      const run = JSON.parse(this.dataset.run);
+      const name = prompt('Name your challenge!');
+      if (!name) alert('You must enter a name!');
+      this.dispatchEvent(
+        new CustomEvent('saveExternal', {
+          composed: true,
+          bubbles: true,
+          detail: {
+            start: run[0],
+            end: run.at(-1),
+            path: run.slice(1, -1),
+            name: name,
+          },
+        })
+      );
+      alert('Challenge saved, see it on community tab');
+    };
   }
 
   async makeRunSteps() {
     const run = JSON.parse(this.dataset.run);
     for (let [index, step] of run.entries()) {
       let li = document.createElement('li');
-      li.classList.add('fixed-size', 'ml-1', 'mr-1');
+      li.classList.add('column', 'is-2', 'ml-1', 'mr-1');
       let card;
       if (index % 2 === 0) {
         const person = await loadPersonById(step);

@@ -17,7 +17,8 @@ template.innerHTML = `
 </style>
 <div class="mt-5 mb-5" style="width:100%; text-align:center">
   <mdbc-game-state id="state"></mdbc-game-state>
-  <button id="prevBt"> <- </button> <button id="nextBt"> -> </button>
+  <button id="prevBt" class="button mr-5 mt-5"> <- </button>
+  <button id="nextBt" class="button ml-5 mt-5"> -> </button>
   <mdbc-options data-index=0></mdbc-options>
 </div>
 `;
@@ -55,6 +56,9 @@ class MDBCApp extends HTMLElement {
     this.addEventListeners = this.addEventListeners.bind(this);
     this.restartGame = this.restartGame.bind(this);
     this.checkWonGame = this.checkWonGame.bind(this);
+    this.finishTargetSelection = this.finishTargetSelection.bind(this);
+    this.loadChallenge = this.loadChallenge.bind(this);
+    this.loadLocal = this.loadLocal.bind(this);
     this.addEventListeners();
     this.loadGame();
   }
@@ -71,20 +75,28 @@ class MDBCApp extends HTMLElement {
     });
     addListener('selectedRandomTarget', async () => {
       this.target = await loadRandomPerson();
-      this.checkWonGame();
-      this.render();
+      this.finishTargetSelection();
     });
     addListener('selectedSource', async ({ detail }) => {
-      this.source = await loadPersonByName(detail);
+      const nSource = await loadPersonByName(detail);
+      if (!nSource) {
+        alert('Person with given name not found');
+        return;
+      }
+      this.source = nSource;
       this.current = this.source;
       this.checkWonGame();
       await this.restartGame();
       this.render();
     });
     addListener('selectedTarget', async ({ detail }) => {
-      this.target = await loadPersonByName(detail);
-      this.checkWonGame();
-      this.render();
+      const nTarget = await loadPersonByName(detail);
+      if (!nTarget) {
+        alert('Person with given name not found');
+        return;
+      }
+      this.target = nTarget;
+      this.finishTargetSelection();
     });
     addListener('selectedNewGame', async () => {
       this.source = await loadRandomPerson();
@@ -96,33 +108,90 @@ class MDBCApp extends HTMLElement {
     });
   }
 
+  finishTargetSelection() {
+    localStorage.setItem('movies_cartographer_target', this.target.id);
+    this.checkWonGame();
+    this.render();
+  }
+
+  updateLocalStorage() {
+    const newPath = [
+      ...JSON.parse(localStorage.getItem('movies_cartographer_path')),
+      this.current.id,
+    ];
+    localStorage.setItem('movies_cartographer_start', this.source.id);
+    localStorage.setItem('movies_cartographer_current', this.current.id);
+    localStorage.setItem('movies_cartographer_current_type', this.browsing);
+    localStorage.setItem('movies_cartographer_target', this.target.id);
+    localStorage.setItem('movies_cartographer_path', `[${newPath}]`);
+  }
+
   async restartGame() {
+    localStorage.setItem('movies_cartographer_start', this.source.id);
+    localStorage.setItem('movies_cartographer_current', this.current.id);
+    localStorage.setItem('movies_cartographer_current_type', 'movies');
+    localStorage.setItem('movies_cartographer_target', this.target.id);
+    localStorage.setItem('movies_cartographer_path', `[${this.source.id}]`);
     this.currentPath = [this.source.id];
     this.page = 0;
     this.optionsList = await loadMovieOptions(this.source.id);
   }
 
-  async loadGame() {
+  async loadChallenge() {
     const challenge = JSON.parse(
       localStorage.getItem('movies_cartographer_challenge')
     );
-    if (challenge) {
-      localStorage.removeItem('movies_cartographer_challenge');
-      this.source = await loadPersonById(challenge.source);
-      this.target = await loadPersonById(challenge.target);
-      this.current = this.source;
-      this.optionsList = await loadMovieOptions(this.source.id);
-      this.render();
+    if (!challenge) return false;
+    localStorage.removeItem('movies_cartographer_challenge');
+    this.source = await loadPersonById(challenge.source);
+    this.target = await loadPersonById(challenge.target);
+    this.current = this.source;
+    this.currentPath = [this.source.id];
+    localStorage.setItem('movies_cartographer_path', `[]`);
+    this.updateLocalStorage();
+    this.optionsList = await loadMovieOptions(this.source.id);
+    return true;
+  }
+
+  async loadLocal() {
+    const start = JSON.parse(localStorage.getItem('movies_cartographer_start'));
+    const current = JSON.parse(
+      localStorage.getItem('movies_cartographer_current')
+    );
+    const target = JSON.parse(
+      localStorage.getItem('movies_cartographer_target')
+    );
+    const path = JSON.parse(localStorage.getItem('movies_cartographer_path'));
+    const browsing = localStorage.getItem('movies_cartographer_current_type');
+    if (!(start && current && target && path && browsing)) return false;
+    this.source = await loadPersonById(start);
+    if (browsing === 'movies') {
+      this.current = await loadPersonById(current);
+      this.optionsList = await loadMovieOptions(this.current.id);
     } else {
-      this.loadAsync();
+      this.current = await loadMovieById(current);
+      this.optionsList = await loadPeopleOptions(this.current.id);
     }
+    this.browsing = browsing;
+    this.target = await loadPersonById(target);
+    this.currentPath = path;
+    return true;
+  }
+
+  async loadGame() {
+    if (!(await this.loadChallenge())) {
+      if (!(await this.loadLocal())) {
+        await this.loadAsync();
+      }
+    }
+    this.render();
   }
 
   async loadAsync() {
     this.target = await loadRandomPerson();
     this.source = await loadRandomPerson();
     this.current = this.source;
-    this.optionsList = await loadMovieOptions(this.source.id);
+    await this.restartGame();
     this.render();
   }
 
@@ -137,9 +206,7 @@ class MDBCApp extends HTMLElement {
   }
 
   handleOptionSelected = async ({ detail }) => {
-    this.currentPath.push(detail);
     this.page = 0;
-    if (this.checkWonGame()) return;
     let newObj, newList;
     if (this.browsing === 'movies') {
       newObj = await loadMovieById(detail);
@@ -155,7 +222,11 @@ class MDBCApp extends HTMLElement {
       else this.browsing = 'movies';
     } else {
       alert('Search unsuccesful. Select another');
+      return;
     }
+    this.currentPath.push(detail);
+    this.updateLocalStorage();
+    if (this.checkWonGame()) return;
     this.render();
   };
 
@@ -168,6 +239,11 @@ class MDBCApp extends HTMLElement {
   }
 
   renderOptions() {
+    if (this.page === 0) this.btPrev.disabled = true;
+    else this.btPrev.disabled = false;
+    if ((this.page + 1) * 6 >= this.optionsList.length - 1)
+      this.btNext.disabled = true;
+    else this.btNext.disabled = false;
     this.optionsElement.dataset.options = JSON.stringify(this.optionsList);
     this.optionsElement.dataset.index = this.page;
   }

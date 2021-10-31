@@ -1,5 +1,12 @@
 import { API_DATA } from './env.js';
 import { API_ENDPOINT, IMAGES_ENDPOINT } from './consts.js';
+import {
+  getDatabase,
+  ref,
+  set,
+  push,
+  onValue,
+} from 'https://www.gstatic.com/firebasejs/9.1.3/firebase-database.js';
 
 export function createCard(src, alt, label) {
   const template = document.createElement('template');
@@ -102,7 +109,7 @@ export async function loadPersonByName(name) {
     };
   } catch {
     console.info('Could not load person by its name');
-    return [];
+    return null;
   }
 }
 
@@ -145,4 +152,8 @@ export function playCustomChallenge(customChallenge) {
     })
   );
   window.location.href = './app.html';
+}
+
+export function saveExternal(ref, run) {
+  push(ref, run);
 }

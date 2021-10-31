@@ -25,18 +25,18 @@ template.innerHTML = `
 </div>
 <div class="app-head" style="width:100%; text-align:center">
     <div class="card fixed-card mr-5">
-        <button class="ml-5" id="change-source">&#8635;</button>
-        <textarea class="ml-1" id="text-source"></textarea>
-        <button id="search-source">&#128270;</button>
+        <button class="button" id="change-source">&#8635;</button>
+        <textarea class="ml-1 is-small" id="text-source"></textarea>
+        <button id="search-source" class="button">&#128270;</button>
         <mdbc-card id="source-card"></mdbc-card>
     </div>
     <div class="card fixed-card">
         <mdbc-card id="current-card"></mdbc-card>
     </div>
     <div class="card fixed-card ml-5">
-        <button class="ml-5" id="change-target">&#8635;</button>
-        <textarea class="ml-1" id="text-target"></textarea>
-        <button id="search-target">&#128270;</button>
+        <button class="button" id="change-target">&#8635;</button>
+        <textarea class="ml-1 is-small" id="text-target"></textarea>
+        <button id="search-target" class="button">&#128270;</button>
         <mdbc-card id="target-card"></mdbc-card>
     </div>
 </div>
