@@ -22,7 +22,7 @@ template.innerHTML = `
   </div>
 </div>
 `;
-class Footer extends HTMLElement {
+class AudioProcessor extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
@@ -44,4 +44,4 @@ class Footer extends HTMLElement {
   render() {}
 }
 
-export { Footer };
+export { AudioProcessor };

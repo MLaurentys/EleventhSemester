@@ -27,7 +27,7 @@ h1{
 </style>
 <header>
   <div class="title-row">
-    <h1 class="ml-2 pt-3"> The Movies Cartographer </h1>
+    <h1 class="ml-2 pt-3"> AUAE </h1>
   </div>
   <nav class="navbar" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
@@ -51,7 +51,7 @@ h1{
   </nav>
 </header>
 `;
-class MDBCHeader extends HTMLElement {
+class Header extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
@@ -83,4 +83,4 @@ class MDBCHeader extends HTMLElement {
   render() {}
 }
 
-export { MDBCHeader };
+export { Header };
