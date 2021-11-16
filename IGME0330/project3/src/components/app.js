@@ -1,15 +1,3 @@
-//import cytoscape from 'https://cdn.jsdelivr.net/npm/cytoscape@3.19.1/dist/cytoscape.esm.min.js';
-import { API_DATA } from '../env.js';
-import { API_ENDPOINT, IMAGES_ENDPOINT } from '../consts.js';
-import {
-  loadMovieById,
-  loadPeopleOptions,
-  loadMovieOptions,
-  loadPersonByName,
-  loadPersonById,
-  loadRandomPerson,
-} from '../utils.js';
-
 const template = document.createElement('template');
 template.innerHTML = `
 <style>

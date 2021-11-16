@@ -1,9 +1,9 @@
 const template = document.createElement('template');
 template.innerHTML = `
 <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css"
-    />
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css"
+/>
 <style>
 h1{
   font-family: SfDistantGalaxy,sans-serif;
@@ -44,11 +44,7 @@ h1{
         </a>
         <a class="navbar-item" id="item-1" href="./app.html"> App
         </a>
-        <a class="navbar-item" id="item-2" href="./favorites.html"> Favorites
-        </a>
-        <a class="navbar-item" id="item-3" href="./community.html"> Community
-        </a>
-        <a class="navbar-item" id="item-4" href="./sources.html"> Documentation
+        <a class="navbar-item" id="item-2" href="./sources.html"> Documentation
         </a>
       </div>
     </div>
