@@ -1,32 +1,20 @@
-const template = document.createElement('template');
+const template = document.createElement("template");
 template.innerHTML = `
 <link
   rel="stylesheet"
   href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css"
 />
-<style>
-.footer {
-  width:100%;
-  padding-bottom:2rem;
-}
-#wrapper {
-  flex: 1;
-}
-</style>
-<div class="footer">
-  <div class="content">
-    <p>
-      &copy; <strong>AUAE</strong> by
-      <a href="https://github.com/MLaurentys">Matheus Laurentys</a>.
-    </p>
-  </div>
-</div>
+<style> </style>
+<canvas width="100%"></canvas>
 `;
 class AudioVisualizer extends HTMLElement {
   constructor() {
     super();
-    this.attachShadow({ mode: 'open' });
+    this.attachShadow({ mode: "open" });
     this.shadowRoot.appendChild(template.content.cloneNode(true));
+    this.canvas = this.shadowRoot.querySelector("canvas");
+    this.ctx = this.canvas.getContext("2d");
+    this.createHistogram();
   }
 
   connectedCallback() {
@@ -35,11 +23,27 @@ class AudioVisualizer extends HTMLElement {
 
   disconnectedCallback() {}
 
-  attributeChangedCallback() {
+  createHistogram(values) {
+    this.ctx.fillStyle = "beige";
+    this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+    this.ctx.fillStyle = "red";
+    this.ctx.fillRect(
+      0,
+      0,
+      this.ctx.canvas.width / 2,
+      this.ctx.canvas.height / 2
+    );
+  }
+
+  attributeChangedCallback(name, _, newVal) {
+    if (name === "frequency") {
+    }
     this.render();
   }
 
-  static get observedAttribute() {}
+  static get observedAttribute() {
+    return ["data-frequency"];
+  }
 
   render() {}
 }
