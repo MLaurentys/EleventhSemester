@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Sine Start</title>
+    <style>
+      canvas {
+        border: 1px solid black;
+      }
+    </style>
+    <script>
+      "use strict";
+      const canvasWidth = 400;
+      const canvasHeight = 300;
+      let canvas;
+      let ctx;
+      let fps = 24;
+      let x = 0;
+      let y1 = 0;
+      let y2 = 0;
+      let y3 = 0;
+      let y4 = 0;
+      let y5 = 0;
+      let y6 = 0;
+      let counter = 0;
+      // helpers
+      function dtr(degrees) {
+        return degrees * (Math.PI / 180);
+      }
+
+      function drawCircle(ctx, x, y, radius, color) {
+        ctx.save();
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.arc(x, y, radius, 0, Math.PI * 2);
+        ctx.closePath();
+        ctx.fill();
+        ctx.restore();
+      }
+
+      function loop() {
+        setTimeout(loop, 1000 / fps);
+        ctx.save();
+        ctx.fillStyle = "black";
+        ctx.globalAlpha = 1 / fps;
+        ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+        ctx.restore();
+        x += 10;
+        counter += 0.3;
+        y1 = canvasHeight / 2 + Math.sin(counter) * 50;
+        y2 = canvasHeight / 2 - Math.sin(counter) * 50;
+        y3 = canvasHeight / 2 - Math.sin(counter) * 150;
+        y4 = canvasHeight / 2 + Math.sin(counter) * 150;
+        y5 = canvasHeight / 2 + Math.sin(2 * counter) * 25;
+        y6 = canvasHeight / 2 - Math.sin(2 * counter) * 25;
+        drawCircle(ctx, x, y1, 2, "white");
+        drawCircle(ctx, x, y2, 2, "red");
+        drawCircle(ctx, x, y3, 2, "blue");
+        drawCircle(ctx, x, y4, 2, "green");
+        drawCircle(ctx, x, y5, 2, "purple");
+        drawCircle(ctx, x, y6, 2, "yellow");
+        if (x > canvasWidth) x = 0;
+      }
+
+      function init() {
+        canvas = document.querySelector("#canvas");
+        ctx = canvas.getContext("2d");
+        canvas.width = canvasWidth;
+        canvas.height = canvasHeight;
+        ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+        loop();
+      }
+
+      window.onload = init;
+    </script>
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+  </body>
+</html>

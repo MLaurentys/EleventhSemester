@@ -1,0 +1,5 @@
+Problem with dish instantiation: -2
+Dish movement not working: -2
+Dish rotation not working right: -1
+Camera controller not working: -2
+Camera rotation not working right: -1

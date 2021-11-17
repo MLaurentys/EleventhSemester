@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>First Canvas</title>
+    <style type="text/css">
+      canvas {
+        border: 1px solid gray;
+      }
+    </style>
+    <script>
+      // #0 - in this class we will always use ECMAScript 5's "strict" mode
+      // See what 'use strict' does here:
+      // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions_and_function_scope/Strict_mode
+      "use strict";
+
+      // handy helper functions!
+      function getRandomColor() {
+        function getByte() {
+          return 55 + Math.round(Math.random() * 200);
+        }
+        return "rgba(" + getByte() + "," + getByte() + "," + getByte() + ",.8)";
+      }
+
+      function getRandomInt(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+      }
+
+      function getRandom(min, max) {
+        return Math.random() * (max - min);
+      }
+
+      function drawRandomRect(ctx) {
+        ctx.fillStyle = getRandomColor();
+        ctx.strokeStyle = getRandomColor();
+        ctx.lineWidth = getRandomInt(2, 12);
+        ctx.beginPath();
+        ctx.rect(
+          getRandomInt(0, 640),
+          getRandomInt(0, 480),
+          getRandomInt(10, 90),
+          getRandomInt(10, 90)
+        );
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+      }
+
+      function drawRandomCircle(ctx) {
+        ctx.fillStyle = getRandomColor();
+        ctx.strokeStyle = getRandomColor();
+        ctx.beginPath();
+        ctx.arc(
+          getRandomInt(0, 640),
+          getRandomInt(0, 480),
+          getRandomInt(50, 150),
+          0,
+          2 * Math.PI
+        );
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+      }
+
+      function drawRandom() {
+        if (Math.random() < 0.5) drawRandomRect(ctx);
+        else drawRandomCircle(ctx);
+      }
+
+      function update() {
+        setTimeout(update, 1000);
+        drawRandom();
+      }
+
+      // #1 call the `init` function after the pages loads
+      window.onload = init;
+      let ctx;
+      function init() {
+        let canvas = document.querySelector("canvas");
+        ctx = canvas.getContext("2d");
+        update();
+      }
+    </script>
+  </head>
+  <body>
+    <canvas width="640" height="480"> Get a real browser! </canvas>
+  </body>
+</html>
