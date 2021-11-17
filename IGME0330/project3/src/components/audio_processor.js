@@ -26,12 +26,23 @@ class AudioProcessor extends HTMLElement {
     this.biquadFilter.connect(this.analyserNode);
     this.analyserNode.connect(this.ctx.destination);
     this.data = new Uint8Array(this.analyserNode.frequencyBinCount);
-    this.dataBuffer = new Uint8Array(this.analyserNode.frequencyBinCount);
-    // this.audio.onplay = (e) => {
-    //   if (audioCtx.state == 'suspended') {
-    //     audioCtx.resume();
-    //   }
-    // };
+    this.audioLoop = this.audioLoop.bind(this);
+    this.audioLoop();
+    this.time = 0;
+  }
+
+  audioLoop() {
+    if (this.time > 500) return;
+    requestAnimationFrame(this.audioLoop);
+    this.analyserNode.getByteFrequencyData(this.data);
+    this.time += 1;
+    this.dispatchEvent(
+      new CustomEvent("audioUpdated", {
+        composed: true,
+        bubble: true,
+        detail: JSON.stringify(Array.from(this.data)),
+      })
+    );
   }
 
   connectedCallback() {
