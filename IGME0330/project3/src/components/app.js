@@ -6,7 +6,7 @@ template.innerHTML = `
 <auae-audio-processor></auae-audio-processor>
 <div class="mt-5 mb-5" style="width:100%; text-align:center">
   <div style="width:700px;height:300px">
-    <auae-audio-visualizer id="visualizer"></auae-audio-visualizer>
+    <auae-audio-controller id="controller"></auae-audio-controller>
   </div>
 </div>
 `;
@@ -16,7 +16,7 @@ class App extends HTMLElement {
     super();
     this.attachShadow({ mode: "open" });
     this.shadowRoot.appendChild(template.content.cloneNode(true));
-    this.visualizer = this.shadowRoot.querySelector("#visualizer");
+    this.controller = this.shadowRoot.querySelector("#controller");
     this.attachHandlers = this.attachHandlers.bind(this);
     this.attachHandlers();
   }
@@ -24,7 +24,7 @@ class App extends HTMLElement {
   attachHandlers() {
     this.addEventListener(
       "audioUpdated",
-      ({ detail }) => (this.visualizer.dataset.frequency = detail)
+      ({ detail }) => (this.controller.dataset.frequency = detail)
     );
   }
 

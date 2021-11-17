@@ -15,6 +15,9 @@ class AudioVisualizer extends HTMLElement {
     this.canvas = this.shadowRoot.querySelector("canvas");
     this.ctx = this.canvas.getContext("2d");
     this.renderHistogram = this.renderHistogram.bind(this);
+    // There are 16 buckets for frequencies
+    this.bucketSize = (this.ctx.canvas.width / 16) * 0.8;
+    this.paddingSize = (this.ctx.canvas.width / 16) * 0.2;
     this.freqs = [];
   }
 
@@ -36,24 +39,17 @@ class AudioVisualizer extends HTMLElement {
   }
 
   renderHistogram() {
-    this.ctx.moveTo(0, 0);
+    this.ctx.save();
     this.ctx.fillStyle = "beige";
     this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
     this.ctx.fillStyle = "red";
     for (let b of this.freqs) {
       let percent = b / 255;
       let a = this.ctx.canvas.height * percent;
-      console.log(a);
-      this.ctx.fillRect(0, 0, 4, 10);
-      this.ctx.translate(1, 0);
-      if (b != 0) {
-        this.renderHistogram = () => {};
-        this.ctx.moveTo(0, 0);
-        this.ctx.fillStyle = "beige";
-        this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
-        break;
-      }
+      this.ctx.fillRect(0, this.ctx.canvas.height, this.bucketSize, -a);
+      this.ctx.translate(this.bucketSize + this.paddingSize, 0);
     }
+    this.ctx.restore();
   }
 
   render() {
