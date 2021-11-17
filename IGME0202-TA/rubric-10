@@ -1,0 +1,11 @@
+Up arrow not accelerating rover (-1)
+S does not stop Rover (-1.5)
+S stops rover when it is not at rest (-1)
+W does not reactivate rover movement (-1)
+A/D rotations do not work when parked (-1)
+A/D rotations work when rover is not parked (-1)
+Robox or Roball not centered (-1)
+Did not replace audio files (-1)
+Did not replace terrain (-1)
+Rover floating (-1)
+
