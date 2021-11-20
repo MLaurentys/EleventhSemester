@@ -31,7 +31,7 @@ class AudioProcessor extends HTMLElement {
   }
 
   audioLoop() {
-    requestAnimationFrame(this.audioLoop);
+    setTimeout(this.audioLoop, 1000 / 12);
     this.analyserNode.getByteFrequencyData(this.data);
     this.dispatchEvent(
       new CustomEvent('audioUpdated', {

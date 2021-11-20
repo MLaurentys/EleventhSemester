@@ -8,8 +8,14 @@ template.innerHTML = `
   rel="stylesheet"
   href="https://people.rit.edu/mtl9706/330/project3/lib/css/bulma-slider.min.css"
 />
-<input id="sliderVolume" class="slider is-fullwidth" min="0" max="100" value="50" step="1" type="range">
-<auae-audio-visualizer id="visualizer"></auae-audio-visualizer>
+<div style="height:30vh">
+    <input style="width:0;z-index:1;position:relative;height:100%;
+          display:inline-block;margin:0"
+          id="sliderVolume" orient="vertical" class="slider is-fullwidth"
+          min="0" max="100" value="50" step="1" type="range">
+    <auae-audio-visualizer style="width:80%;height:100%;display:inline-block" id="visualizer">
+    </auae-audio-visualizer>
+</div>
 `;
 class AudioController extends HTMLElement {
   constructor() {
@@ -18,6 +24,8 @@ class AudioController extends HTMLElement {
     this.shadowRoot.appendChild(template.content.cloneNode(true));
     this.visualizer = this.shadowRoot.querySelector('#visualizer');
     this.slider = this.shadowRoot.querySelector('#sliderVolume');
+    this.volume = this.slider.value;
+    this.slider.oninput = () => (this.volume = this.slider.value);
   }
 
   connectedCallback() {
