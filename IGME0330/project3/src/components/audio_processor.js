@@ -14,6 +14,7 @@ class AudioProcessor extends HTMLElement {
     this.attachShadow({ mode: "open" });
     this.shadowRoot.appendChild(template.content.cloneNode(true));
     this.audio = this.shadowRoot.querySelector("audio");
+    this.audio.volume = 0.5;
     this.ctx = new (window.AudioContext || window.webkitAudioContext)();
     this.sourceNode = this.ctx.createMediaElementSource(this.audio);
     this.biquadFilter = this.ctx.createBiquadFilter();

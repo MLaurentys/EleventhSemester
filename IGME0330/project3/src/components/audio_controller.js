@@ -9,7 +9,8 @@ template.innerHTML = `
   href="https://people.rit.edu/mtl9706/330/project3/lib/css/bulma-slider.min.css"
 />
 <link rel="stylesheet" href="../styles/audio-controller.css" />
-<div style="height:30vh;width:50%;position:relative;margin-left:3%;">
+<auae-audio-processor></auae-audio-processor>
+<div style="height:30vh;width:100%;position:relative;margin-left:3%;">
     <input id="sliderVolume" orient="vertical" class="slider slider-hist is-fullwidth"
           min="0" max="100" value="50" step="1" type="range">
     <input id="sliderLow" class="slider slider-hist is-fullwidth"
@@ -61,6 +62,10 @@ class AudioController extends HTMLElement {
       this.highIndicator.style.left = `${this.highSlider.value}%`;
       this.high = this.highSlider.value;
     };
+    this.addEventListener(
+      "audioUpdated",
+      ({ detail }) => (this.visualizer.dataset.frequency = detail)
+    );
   }
 
   connectedCallback() {
@@ -74,11 +79,10 @@ class AudioController extends HTMLElement {
   }
 
   static get observedAttributes() {
-    return ["data-frequency", "data-input"];
+    return [];
   }
 
   render() {
-    this.visualizer.dataset.frequency = this.dataset.frequency;
     this.command.textContent = this.dataset.input ?? "No command";
   }
 }

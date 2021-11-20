@@ -1,11 +1,15 @@
 const template = document.createElement("template");
 template.innerHTML = `
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css"
+/>
 <style>
-  @import "https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css";
 </style>
-<auae-audio-processor></auae-audio-processor>
-<div class="mt-5 mb-5" style="width:100%; text-align:center">
-  <div style="width:700px;height:300px">
+<div class="container columns" style="width:100%; text-align:center">
+  <div class="column is-three-quarters">
+  </div>
+  <div class="column is-one-quarter">
     <auae-audio-controller id="controller"></auae-audio-controller>
   </div>
 </div>
@@ -21,12 +25,7 @@ class App extends HTMLElement {
     this.attachHandlers();
   }
 
-  attachHandlers() {
-    this.addEventListener(
-      "audioUpdated",
-      ({ detail }) => (this.controller.dataset.frequency = detail)
-    );
-  }
+  attachHandlers() {}
 
   render() {}
 }
