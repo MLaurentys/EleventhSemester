@@ -39,7 +39,7 @@ template.innerHTML = `
   width: 0;
   height: 100%;
   bottom: 0%;
-  left: ${HIGH_START_POS};
+  left: ${HIGH_START_POS}%;
 }
 #sliderLow {
   bottom: 0;
@@ -64,26 +64,22 @@ template.innerHTML = `
       <input id="sliderVolume" orient="vertical" class="slider slider-hist is-fullwidth"
             min="0" max="100" value="${START_VOLUME}" step="1" type="range">
       <input id="sliderLow" class="slider slider-hist is-fullwidth"
-        min="${HISTO_STEP}" max="${
+        min="${HISTO_STEP - OFFSET}" max="${
   HISTO_STEP * (NUM_CHANNELS / 2 - 2) + LOW_MIN
-}%" value="${LOW_START_POS}" step="${HISTO_STEP}" type="range">
+}" value="${LOW_START_POS}" step="${HISTO_STEP}" type="range">
   <input id="sliderHigh" class="slider slider-hist is-fullwidth"
-      min="${50 + HIGH_MIN}" max="${
+      min="${HIGH_MIN}" max="${
   100 - HISTO_STEP - OFFSET
 }" value="${HIGH_START_POS}" step="${HISTO_STEP}" type="range">
     <div class="threshold-indicator" id="volume-indicator"></div>
     <div class="threshold-indicator" id="low-indicator"></div>
-    
+    <div class="threshold-indicator" id="high-indicator"></div>
     <auae-audio-visualizer data-volue="50";
-    style="width:100%;height:100%;display:inline-block" id="visualizer">
+    style="width:100%;height:100%;display:inline-block;margin-left:2px;" id="visualizer">
     </auae-audio-visualizer>
     <p></p>
 </div>
 `;
-// <div class="threshold-indicator" id="high-indicator"></div>
-console.log(HISTO_STEP * (NUM_CHANNELS / 2 - 2) + LOW_MIN);
-console.log(LOW_START_POS);
-console.log(HISTO_STEP);
 class AudioController extends HTMLElement {
   constructor() {
     super();
@@ -100,8 +96,6 @@ class AudioController extends HTMLElement {
     this.highIndicator = this.shadowRoot.querySelector("#high-indicator");
     this.command = this.shadowRoot.querySelector("p");
     this.connectEventHandlers = this.connectEventHandlers.bind(this);
-    console.log("Final", this.lowSlider.value);
-    console.log("Final", this.lowSlider.max);
     this.connectEventHandlers();
   }
 
@@ -114,7 +108,6 @@ class AudioController extends HTMLElement {
     this.lowSlider.oninput = () => {
       this.lowIndicator.style.left = `${this.lowSlider.value}%`;
       this.processor.dataset.low = this.lowSlider.value;
-      console.log("Final", this.lowSlider.value);
     };
     this.highSlider.oninput = () => {
       this.highIndicator.style.left = `${this.highSlider.value}%`;

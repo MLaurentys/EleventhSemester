@@ -1,4 +1,4 @@
-import { HISTO_STEP } from "../consts.js";
+import { HISTO_STEP, FFT_SIZE } from "../consts.js";
 
 const template = document.createElement("template");
 template.innerHTML = `
@@ -24,7 +24,7 @@ class AudioProcessor extends HTMLElement {
     this.biquadFilter.frequency.setValueAtTime(1000, this.ctx.currentTime);
     this.biquadFilter.gain.setValueAtTime(25, this.ctx.currentTime);
     this.analyserNode = this.ctx.createAnalyser();
-    this.analyserNode.fftSize = 32;
+    this.analyserNode.fftSize = FFT_SIZE;
     this.sourceNode.connect(this.biquadFilter);
     this.biquadFilter.connect(this.analyserNode);
     this.analyserNode.connect(this.ctx.destination);

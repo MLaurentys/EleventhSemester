@@ -1,4 +1,4 @@
-export const FFT_SIZE = 32;
+export const FFT_SIZE = 64;
 export const NUM_CHANNELS = FFT_SIZE / 2;
 export const BIN_FACTOR = 0.8;
 export const PAD_FACTOR = 1 - BIN_FACTOR;
@@ -13,7 +13,7 @@ export const START_HIGH = NUM_CHANNELS / 2 + 1;
 export const LOW_MIN = HISTO_STEP - OFFSET;
 export const HIGH_MIN = 50 + LOW_MIN;
 // Where low and high are by default
-export const LOW_START_POS = HISTO_STEP * (START_LOW - 1) + LOW_MIN;
-export const HIGH_START_POS = HISTO_STEP * (START_HIGH - 1) + HIGH_MIN;
+export const LOW_START_POS = HISTO_STEP * START_LOW - OFFSET;
+export const HIGH_START_POS = HISTO_STEP * START_HIGH - OFFSET;
 // Default mic volume threshold
 export const START_VOLUME = 50;

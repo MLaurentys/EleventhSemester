@@ -62,7 +62,7 @@ class AudioVisualizer extends HTMLElement {
       this.ctx.fillRect(0, this.ctx.canvas.height, this.bucketSize, -a);
       this.ctx.translate(this.bucketSize + this.paddingSize, 0);
     }
-    this.ctx.translate(-16 * (this.bucketSize + this.paddingSize), 0);
+    this.ctx.translate(-NUM_CHANNELS * (this.bucketSize + this.paddingSize), 0);
     this.ctx.fillStyle = "rgba(0,0,0,0.8)";
     this.ctx.fillRect(
       0,
