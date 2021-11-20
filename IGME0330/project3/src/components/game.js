@@ -1,34 +1,47 @@
+const STANCES = Object.seal({
+  TOP: 0,
+  MIDDLE: 1,
+  BOTTOM: 2,
+});
+
 const template = document.createElement("template");
 template.innerHTML = `
 <link
   rel="stylesheet"
   href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css"
 />
-<style>
-</style>
-<div class="container columns" style="width:100%; text-align:center">
-  <div class="column is-three-quarters">
-    <auae-game></auae-game>
-  </div>
-  <div class="column is-one-quarter">
-    <auae-audio-controller id="controller"></auae-audio-controller>
-  </div>
+<div>
+    <canvas style="width:100%; height:100%"></canvas>
 </div>
 `;
 
-class App extends HTMLElement {
+class Game extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: "open" });
     this.shadowRoot.appendChild(template.content.cloneNode(true));
-    this.controller = this.shadowRoot.querySelector("#controller");
     this.attachHandlers = this.attachHandlers.bind(this);
     this.attachHandlers();
+    this.playerStance = STANCES.MIDDLE;
   }
 
   attachHandlers() {}
 
+  connectedCallback() {
+    this.render();
+  }
+
+  disconnectedCallback() {}
+
+  attributeChangedCallback() {
+    this.render();
+  }
+
+  static get observedAttributes() {
+    return ["command"];
+  }
+
   render() {}
 }
 
-export { App };
+export { Game };

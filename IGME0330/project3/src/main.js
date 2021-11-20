@@ -4,6 +4,7 @@ import { Footer } from "./components/footer.js";
 import { AudioVisualizer } from "./components/audio_visualizer.js";
 import { AudioProcessor } from "./components/audio_processor.js";
 import { AudioController } from "./components/audio_controller.js";
+import { Game } from "./components/game.js";
 
 const init = () => {
   const url = "data/all.json";
@@ -13,6 +14,7 @@ const init = () => {
   customElements.define("auae-audio-visualizer", AudioVisualizer);
   customElements.define("auae-audio-processor", AudioProcessor);
   customElements.define("auae-audio-controller", AudioController);
+  customElements.define("auae-game", Game);
 };
 
 window.onload = init;
