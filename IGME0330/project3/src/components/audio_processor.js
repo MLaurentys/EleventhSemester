@@ -1,4 +1,4 @@
-const template = document.createElement('template');
+const template = document.createElement("template");
 template.innerHTML = `
 <link
   rel="stylesheet"
@@ -11,13 +11,13 @@ template.innerHTML = `
 class AudioProcessor extends HTMLElement {
   constructor() {
     super();
-    this.attachShadow({ mode: 'open' });
+    this.attachShadow({ mode: "open" });
     this.shadowRoot.appendChild(template.content.cloneNode(true));
-    this.audio = this.shadowRoot.querySelector('audio');
+    this.audio = this.shadowRoot.querySelector("audio");
     this.ctx = new (window.AudioContext || window.webkitAudioContext)();
     this.sourceNode = this.ctx.createMediaElementSource(this.audio);
     this.biquadFilter = this.ctx.createBiquadFilter();
-    this.biquadFilter.type = 'highshelf';
+    this.biquadFilter.type = "highshelf";
     this.biquadFilter.frequency.setValueAtTime(1000, this.ctx.currentTime);
     this.biquadFilter.gain.setValueAtTime(25, this.ctx.currentTime);
     this.analyserNode = this.ctx.createAnalyser();
@@ -34,7 +34,7 @@ class AudioProcessor extends HTMLElement {
     setTimeout(this.audioLoop, 1000 / 12);
     this.analyserNode.getByteFrequencyData(this.data);
     this.dispatchEvent(
-      new CustomEvent('audioUpdated', {
+      new CustomEvent("audioUpdated", {
         composed: true,
         bubble: true,
         detail: JSON.stringify(Array.from(this.data)),

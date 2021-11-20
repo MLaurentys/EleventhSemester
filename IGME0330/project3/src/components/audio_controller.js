@@ -8,54 +8,7 @@ template.innerHTML = `
   rel="stylesheet"
   href="https://people.rit.edu/mtl9706/330/project3/lib/css/bulma-slider.min.css"
 />
-<style>
-.threshold-indicator {
-  position:absolute;
-  border:2px solid red;
-}
-#volume-indicator {
-  width:100%;
-  bottom:50%;
-}
-#low-indicator {
-  width:0;
-  height:100%;
-  bottom:0%;
-  left:43.75%;
-}
-#high-indicator {
-  width:0;
-  height:100%;
-  bottom:0%;
-  left:56.25%;
-}
-.slider-hist {
-  z-index:1;
-  position:absolute;
-}
-#sliderVolume {
-  width:0;
-  left:0;
-  height:100%;
-  margin:0;
-}
-#sliderLow {
-  bottom:0;
-  left:0;
-  height:0;
-  min-height:0;
-  width:43.75%;
-  margin:0;
-}
-#sliderHigh {
-  bottom:0;
-  left:56.25%;
-  height:0;
-  min-height:0;
-  width:45%;
-  margin:0;
-}
-</style>
+<link rel="stylesheet" href="../styles/audio-controller.css" />
 <div style="height:30vh;width:50%;position:relative;margin-left:3%;">
     <input id="sliderVolume" orient="vertical" class="slider slider-hist is-fullwidth"
           min="0" max="100" value="50" step="1" type="range">
@@ -70,7 +23,7 @@ template.innerHTML = `
     style="width:100%;height:100%;display:inline-block" id="visualizer">
     </auae-audio-visualizer>
     <ui5-range-slider end-value="20" style="margin-top:10%"></ui5-range-slider>
-	
+    <p> No input </p>
 </div>
 `;
 class AudioController extends HTMLElement {
@@ -86,6 +39,7 @@ class AudioController extends HTMLElement {
     this.volumeIndicator = this.shadowRoot.querySelector("#volume-indicator");
     this.lowIndicator = this.shadowRoot.querySelector("#low-indicator");
     this.highIndicator = this.shadowRoot.querySelector("#high-indicator");
+    this.command = this.shadowRoot.querySelector("p");
     this.volume = this.volumeSlider.value;
     this.low = this.lowSlider.value;
     this.high = this.highSlider.value;
@@ -120,11 +74,12 @@ class AudioController extends HTMLElement {
   }
 
   static get observedAttributes() {
-    return ["data-frequency"];
+    return ["data-frequency", "data-input"];
   }
 
   render() {
     this.visualizer.dataset.frequency = this.dataset.frequency;
+    this.command.textContent = this.dataset.input ?? "No command";
   }
 }
 
