@@ -6,12 +6,14 @@ template.innerHTML = `
 />
 <style>
 </style>
-<div class="container columns" style="width:100%; text-align:center">
-  <div class="column is-three-quarters">
-    <auae-game></auae-game>
-  </div>
-  <div class="column is-one-quarter">
-    <auae-audio-controller id="controller"></auae-audio-controller>
+<div class="container" style="width:100%; text-align:center">
+  <div class="columns">
+    <div class="column is-three-quarters">
+      <auae-game id="game"></auae-game>
+    </div>
+    <div class="column is-one-quarter">
+      <auae-audio-controller id="controller"></auae-audio-controller>
+    </div>
   </div>
 </div>
 `;
@@ -22,11 +24,16 @@ class App extends HTMLElement {
     this.attachShadow({ mode: "open" });
     this.shadowRoot.appendChild(template.content.cloneNode(true));
     this.controller = this.shadowRoot.querySelector("#controller");
+    this.game = this.shadowRoot.querySelector("#game");
     this.attachHandlers = this.attachHandlers.bind(this);
     this.attachHandlers();
   }
 
-  attachHandlers() {}
+  attachHandlers() {
+    this.addEventListener("command", ({ detail }) => {
+      this.game.dataset.command = detail;
+    });
+  }
 
   render() {}
 }

@@ -1,4 +1,4 @@
-export const FFT_SIZE = 64;
+export const FFT_SIZE = 32;
 export const NUM_CHANNELS = FFT_SIZE / 2;
 export const BIN_FACTOR = 0.8;
 export const PAD_FACTOR = 1 - BIN_FACTOR;

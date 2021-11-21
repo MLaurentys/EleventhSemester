@@ -1,4 +1,4 @@
-import { HISTO_STEP, FFT_SIZE } from "../consts.js";
+import { HISTO_STEP, OFFSET, FFT_SIZE } from "../consts.js";
 
 const template = document.createElement("template");
 template.innerHTML = `
@@ -40,8 +40,8 @@ class AudioProcessor extends HTMLElement {
     let amtMed = 0;
     let amtHigh = 0;
     let vol = +(this.dataset.volume / 100) * 256;
-    let low = +this.dataset.low / HISTO_STEP;
-    let high = +this.dataset.high / HISTO_STEP;
+    let low = (+this.dataset.low + OFFSET) / HISTO_STEP;
+    let high = (+this.dataset.high + OFFSET) / HISTO_STEP;
     for (let i = 0; i < low; ++i) amtLow += Math.max(this.data[i] - vol, 0);
     for (let i = low; i < high; ++i) amtMed += Math.max(this.data[i] - vol, 0);
     for (let i = high; i < this.data.length; ++i)
