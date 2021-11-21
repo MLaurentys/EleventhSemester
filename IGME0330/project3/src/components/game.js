@@ -1,8 +1,4 @@
-const STANCES = Object.seal({
-  TOP: 0,
-  MIDDLE: 1,
-  BOTTOM: 2,
-});
+import Player from "../game_objects/player.js";
 
 const template = document.createElement("template");
 template.innerHTML = `
@@ -12,6 +8,7 @@ template.innerHTML = `
 />
 <div id="game-container">
     <canvas id="game-screen" style="width:100%; height:100%"></canvas>
+    <img style="display:none" id="player-ship" src="../../images/ship.png" disabled>
 </div>
 `;
 
@@ -20,11 +17,9 @@ class Game extends HTMLElement {
     super();
     this.attachShadow({ mode: "open" });
     this.attachHandlers = this.attachHandlers.bind(this);
-    this.moveUp = this.moveUp.bind(this);
-    this.moveDown = this.moveDown.bind(this);
-    this.shoot = this.shoot.bind(this);
     this.shadowRoot.appendChild(template.content.cloneNode(true));
-    this.playerStance = STANCES.MIDDLE;
+    this.player = new Player(this.shadowRoot.querySelector("#player-ship"));
+    this.shoot = this.shoot.bind(this);
     this.canvas = this.shadowRoot.querySelector("canvas");
     this.ctx = this.canvas.getContext("2d");
     this.attachHandlers();
@@ -42,23 +37,12 @@ class Game extends HTMLElement {
 
   disconnectedCallback() {}
 
-  moveUp() {
-    if (this.playerStance === STANCES.MIDDLE) this.playerStance = STANCES.TOP;
-    else if (this.playerStance === STANCES.BOTTOM)
-      this.playerStance = STANCES.MIDDLE;
-  }
-
-  moveDown() {
-    if (this.playerStance === STANCES.MIDDLE)
-      this.playerStance = STANCES.BOTTOM;
-    else if (this.playerStance === STANCES.TOP)
-      this.playerStance = STANCES.MIDDLE;
-  }
+  shoot() {}
 
   attributeChangedCallback(name, _, newVal) {
     if (name === "data-command") {
-      if (newVal === "E") this.moveUp();
-      else if (newVal === "U") this.moveDown();
+      if (newVal === "E") this.player.moveUp();
+      else if (newVal === "U") this.player.moveDown();
       else if (newVal === "A") this.shoot();
     }
     this.render();
@@ -70,8 +54,9 @@ class Game extends HTMLElement {
 
   render() {
     this.ctx.save();
-    this.clearRect();
+    this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
     this.ctx.restore();
+    this.player.render(this.ctx);
   }
 }
 
