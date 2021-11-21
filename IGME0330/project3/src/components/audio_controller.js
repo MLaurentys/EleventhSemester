@@ -2,7 +2,7 @@ import {
   LOW_MIN,
   BIN_FACTOR,
   PAD_FACTOR,
-  NUM_CHANNELS,
+  NUM_BARS,
   START_VOLUME,
   HISTO_STEP,
   LOW_START_POS,
@@ -46,7 +46,7 @@ template.innerHTML = `
   left: ${LOW_MIN}%;
   height: 0;
   min-height: 0;
-  width: ${HISTO_STEP * (NUM_CHANNELS / 2 - 2) + LOW_MIN}%;
+  width: ${HISTO_STEP * (NUM_BARS / 2 - 2) + LOW_MIN}%;
   margin: 0;
 }
 #sliderHigh {
@@ -65,7 +65,7 @@ template.innerHTML = `
             min="0" max="100" value="${START_VOLUME}" step="1" type="range">
       <input id="sliderLow" class="slider slider-hist is-fullwidth"
         min="${HISTO_STEP - OFFSET}" max="${
-  HISTO_STEP * (NUM_CHANNELS / 2 - 2) + LOW_MIN
+  HISTO_STEP * (NUM_BARS / 2 - 2) + LOW_MIN
 }" value="${LOW_START_POS}" step="${HISTO_STEP}" type="range">
   <input id="sliderHigh" class="slider slider-hist is-fullwidth"
       min="${HIGH_MIN}" max="${

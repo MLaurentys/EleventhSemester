@@ -1,11 +1,4 @@
-import {
-  HISTO_STEP,
-  OFFSET,
-  FFT_SIZE,
-  NUM_BARS,
-  BARS_TO_SKIP,
-  binFreqRange,
-} from "../consts.js";
+import { HISTO_STEP, OFFSET, FFT_SIZE } from "../consts.js";
 
 const template = document.createElement("template");
 template.innerHTML = `
@@ -22,36 +15,22 @@ class AudioProcessor extends HTMLElement {
     super();
     this.attachShadow({ mode: "open" });
     this.shadowRoot.appendChild(template.content.cloneNode(true));
-    this.audioLoop = this.audioLoop.bind(this);
-    this.processCommand = this.processCommand.bind(this);
-    this.startMicrophone = this.startMicrophone.bind(this);
-    this.startAudioProcessing = this.startAudioProcessing.bind(this);
-    this.startMicrophone();
-  }
-
-  async startMicrophone() {
-    try {
-      this.audioStream = await navigator.mediaDevices.getUserMedia({
-        audio: true,
-        video: false,
-      });
-    } catch (err) {
-      console.log("app needs microphone permission: " + err);
-    }
-    this.startAudioProcessing();
-  }
-
-  startAudioProcessing() {
-    window.AudioContext = window.AudioContext || window.webkitAudioContext;
-    this.ctx = new AudioContext();
-    console.log(this.audioStream);
-    this.sourceNode = this.ctx.createMediaStreamSource(this.audioStream);
+    this.audio = this.shadowRoot.querySelector("audio");
+    this.audio.volume = 0.5;
+    this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+    this.sourceNode = this.ctx.createMediaElementSource(this.audio);
+    this.biquadFilter = this.ctx.createBiquadFilter();
+    this.biquadFilter.type = "highshelf";
+    this.biquadFilter.frequency.setValueAtTime(1000, this.ctx.currentTime);
+    this.biquadFilter.gain.setValueAtTime(25, this.ctx.currentTime);
     this.analyserNode = this.ctx.createAnalyser();
     this.analyserNode.fftSize = FFT_SIZE;
-    this.sourceNode.connect(this.analyserNode);
+    this.sourceNode.connect(this.biquadFilter);
+    this.biquadFilter.connect(this.analyserNode);
     this.analyserNode.connect(this.ctx.destination);
-    console.log(this.ctx.sampleRate);
     this.data = new Uint8Array(this.analyserNode.frequencyBinCount);
+    this.audioLoop = this.audioLoop.bind(this);
+    this.processCommand = this.processCommand.bind(this);
     this.commandDelay = 0;
     this.audioLoop();
   }
@@ -61,22 +40,12 @@ class AudioProcessor extends HTMLElement {
     let amtMed = 0;
     let amtHigh = 0;
     let vol = +(this.dataset.volume / 100) * 256;
-    let low =
-      Math.round((+this.dataset.low + OFFSET) / HISTO_STEP) + BARS_TO_SKIP;
-    let high =
-      Math.round((+this.dataset.high + OFFSET) / HISTO_STEP) + BARS_TO_SKIP;
-    for (let i = BARS_TO_SKIP; i < low; ++i)
-      amtLow += Math.max(this.data[i] - vol, 0);
+    let low = (+this.dataset.low + OFFSET) / HISTO_STEP;
+    let high = (+this.dataset.high + OFFSET) / HISTO_STEP;
+    for (let i = 0; i < low; ++i) amtLow += Math.max(this.data[i] - vol, 0);
     for (let i = low; i < high; ++i) amtMed += Math.max(this.data[i] - vol, 0);
-    for (let i = high; i < NUM_BARS + BARS_TO_SKIP; ++i)
+    for (let i = high; i < this.data.length; ++i)
       amtHigh += Math.max(this.data[i] - vol, 0);
-    // console.log(`LOW: [${BARS_TO_SKIP * binFreqRange}, ${binFreqRange * low}]`);
-    // console.log(`AVG: [${binFreqRange * low}, ${binFreqRange * high}]`);
-    // console.log(
-    //   `HIGH: [${binFreqRange * high}, ${
-    //     binFreqRange * (NUM_BARS + BARS_TO_SKIP)
-    //   }]`
-    // );
     let candidate = ["low", amtLow];
     if (amtMed > candidate[1]) candidate = ["avg", amtMed];
     if (amtHigh > candidate[1]) candidate = ["high", amtHigh];
@@ -110,7 +79,7 @@ class AudioProcessor extends HTMLElement {
       new CustomEvent("audioUpdated", {
         composed: true,
         bubble: true,
-        detail: this.data.slice(BARS_TO_SKIP, BARS_TO_SKIP + NUM_BARS),
+        detail: this.data,
       })
     );
   }

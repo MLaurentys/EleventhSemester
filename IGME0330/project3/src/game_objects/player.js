@@ -9,7 +9,6 @@ export default class Player {
     this.imgEl = imgEl;
     this.moveUp = this.moveUp.bind(this);
     this.moveDown = this.moveDown.bind(this);
-    console.log(imgEl);
     this.yPos = 10;
   }
 
@@ -30,6 +29,5 @@ export default class Player {
     ctx.save();
     ctx.drawImage(this.imgEl, 50, this.yPos);
     ctx.restore();
-    this.yPos += 1;
   }
 }

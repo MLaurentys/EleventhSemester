@@ -1,4 +1,4 @@
-import { NUM_CHANNELS, BIN_FACTOR, PAD_FACTOR } from "../consts.js";
+import { NUM_BARS, BIN_FACTOR, PAD_FACTOR } from "../consts.js";
 const template = document.createElement("template");
 template.innerHTML = `
 <link
@@ -24,8 +24,8 @@ class AudioVisualizer extends HTMLElement {
     this.ctx = this.canvas.getContext("2d");
     this.renderHistogram = this.renderHistogram.bind(this);
     // There are 16 buckets for frequencies
-    this.bucketSize = (this.ctx.canvas.width / NUM_CHANNELS) * BIN_FACTOR;
-    this.paddingSize = (this.ctx.canvas.width / NUM_CHANNELS) * PAD_FACTOR;
+    this.bucketSize = (this.ctx.canvas.width / NUM_BARS) * BIN_FACTOR;
+    this.paddingSize = (this.ctx.canvas.width / NUM_BARS) * PAD_FACTOR;
     this.volHeigh = (1 / 2) * this.ctx.canvas.height;
     this.freqs = [];
   }
@@ -62,7 +62,7 @@ class AudioVisualizer extends HTMLElement {
       this.ctx.fillRect(0, this.ctx.canvas.height, this.bucketSize, -a);
       this.ctx.translate(this.bucketSize + this.paddingSize, 0);
     }
-    this.ctx.translate(-NUM_CHANNELS * (this.bucketSize + this.paddingSize), 0);
+    this.ctx.translate(-NUM_BARS * (this.bucketSize + this.paddingSize), 0);
     this.ctx.fillStyle = "rgba(0,0,0,0.8)";
     this.ctx.fillRect(
       0,
