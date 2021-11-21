@@ -1,4 +1,4 @@
-const template = document.createElement('template');
+const template = document.createElement("template");
 template.innerHTML = `
 <link
   rel="stylesheet"
@@ -17,7 +17,6 @@ h1{
 }
 .title-row {
   min-height:15vh;
-  background-image: url('https://people.rit.edu/~mtl9706/330/project1/images/header_sky.jpg');
   background-position: 50% 50%;
 }
 #logo {
@@ -31,7 +30,7 @@ h1{
   </div>
   <nav class="navbar" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
-      <img class="navbar-item" id="logo" src="https://people.rit.edu/~mtl9706/330/project1/images/logo2.jpg" alt="logo"/>
+      <img class="navbar-item" id="logo" alt="logo"/>
       <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="pages">
         <span aria-hidden="true"></span>
         <span aria-hidden="true"></span>
@@ -54,16 +53,25 @@ h1{
 class Header extends HTMLElement {
   constructor() {
     super();
-    this.attachShadow({ mode: 'open' });
+    this.attachShadow({ mode: "open" });
     this.shadowRoot.appendChild(template.content.cloneNode(true));
-    this.h1 = this.shadowRoot.querySelector('h1');
+    this.setImages = this.setImages.bind(this);
+    this.h1 = this.shadowRoot.querySelector("h1");
     this.item = this.shadowRoot.querySelector(`#item-${this.dataset.page}`);
-    this.item.className += ' has-text-link has-background-light';
-    this.pageItems = this.shadowRoot.querySelector('#pages');
-    this.shadowRoot.querySelector('.navbar-burger').onclick = (el) => {
-      el.target.classList.toggle('is-active');
-      this.pageItems.classList.toggle('is-active');
+    this.item.className += " has-text-link has-background-light";
+    this.pageItems = this.shadowRoot.querySelector("#pages");
+    this.shadowRoot.querySelector(".navbar-burger").onclick = (el) => {
+      el.target.classList.toggle("is-active");
+      this.pageItems.classList.toggle("is-active");
     };
+    this.setImages();
+  }
+
+  setImages() {
+    VANTA.CLOUDS({
+      el: this.shadowRoot.querySelector(".title-row"),
+    });
+    this.shadowRoot.querySelector("#logo").src = "../images/logo.jpg";
   }
 
   connectedCallback() {
@@ -77,7 +85,7 @@ class Header extends HTMLElement {
   }
 
   static get observedAttribute() {
-    return ['data-title'];
+    return ["data-title"];
   }
 
   render() {}

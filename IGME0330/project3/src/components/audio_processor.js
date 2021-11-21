@@ -80,7 +80,8 @@ class AudioProcessor extends HTMLElement {
     let candidate = ["low", amtLow];
     if (amtMed > candidate[1]) candidate = ["avg", amtMed];
     if (amtHigh > candidate[1]) candidate = ["high", amtHigh];
-    if (candidate[1] > 100) {
+    //prevent some noise
+    if (candidate[1] > 50) {
       this.dispatchEvent(
         new CustomEvent("newCommand", {
           composed: true,

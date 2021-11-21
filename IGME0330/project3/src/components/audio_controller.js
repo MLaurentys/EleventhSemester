@@ -12,9 +12,9 @@ import {
 } from "../consts.js";
 
 const commands = {
-  low: "E",
+  low: "U",
   avg: "A",
-  high: "U",
+  high: "E",
   "": "No command",
 };
 const template = document.createElement("template");

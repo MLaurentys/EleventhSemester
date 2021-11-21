@@ -1,6 +1,6 @@
 export const FFT_SIZE = 4096;
-export const BARS_TO_SKIP = Math.ceil(40 / (48000 / FFT_SIZE));
-export const NUM_BARS = Math.ceil(350 / (48000 / FFT_SIZE)) - BARS_TO_SKIP;
+export const BARS_TO_SKIP = Math.ceil(60 / (48000 / FFT_SIZE));
+export const NUM_BARS = Math.ceil(300 / (48000 / FFT_SIZE)) - BARS_TO_SKIP;
 export const BIN_FACTOR = 0.8;
 export const PAD_FACTOR = 1 - BIN_FACTOR;
 // How much in percentage is a step
@@ -18,7 +18,4 @@ export const LOW_START_POS = HISTO_STEP * START_LOW - OFFSET;
 export const HIGH_START_POS = HISTO_STEP * START_HIGH - OFFSET;
 // Default mic volume threshold
 export const START_VOLUME = 50;
-
 export const binFreqRange = 48000 / FFT_SIZE;
-console.log(binFreqRange);
-console.log(BARS_TO_SKIP * binFreqRange);
