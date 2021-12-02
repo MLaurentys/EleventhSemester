@@ -3,3 +3,5 @@ GUI info is incomplete or wrong -2
 Leaning not working for North -1
 Leaning not working for W, E, S -2
 TurnMode.Rotate not implemented correctly -1
+Small bug after resetting radius -0.5
+GUI info is incomplete or wrong -1

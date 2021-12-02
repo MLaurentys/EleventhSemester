@@ -1,5 +1,6 @@
 Normals not removed from surface -0.4
 Normals not created in floor -0.4
 Laser not working right -0.5
-Camera movement nor working -0.5
+Camera movement not working -0.5
 GUI not displaying correct info -0.4
+Normals a the floor are wrong - 0.4
