@@ -26,8 +26,6 @@ export default class Player {
   }
 
   render(ctx) {
-    ctx.save();
     ctx.drawImage(this.imgEl, 50, this.yPos);
-    ctx.restore();
   }
 }

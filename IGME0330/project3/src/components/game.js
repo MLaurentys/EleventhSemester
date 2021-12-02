@@ -1,4 +1,11 @@
 import Player from "../game_objects/player.js";
+import MainMenu from "../game_objects/main_menu.js";
+
+const GAME_STATE = Object.seal({
+  MAIN_MENU: 0,
+  TUTORIAL: 1,
+  GAME: 2,
+});
 
 const template = document.createElement("template");
 template.innerHTML = `
@@ -17,11 +24,20 @@ class Game extends HTMLElement {
     super();
     this.attachShadow({ mode: "open" });
     this.attachHandlers = this.attachHandlers.bind(this);
+    this.updateGame = this.updateGame.bind(this);
+    this.updateMainMenu = this.updateMainMenu.bind(this);
+    this.updaters = Object.seal({
+      [GAME_STATE.GAME]: this.updateGame,
+      [GAME_STATE.MAIN_MENU]: this.updateMainMenu,
+      [GAME_STATE.TUTORIAL]: this.renderTutorial,
+    });
     this.shadowRoot.appendChild(template.content.cloneNode(true));
     this.player = new Player(this.shadowRoot.querySelector("#player-ship"));
+    this.menu = new MainMenu();
     this.shoot = this.shoot.bind(this);
     this.canvas = this.shadowRoot.querySelector("canvas");
     this.ctx = this.canvas.getContext("2d");
+    this.state = GAME_STATE.MAIN_MENU;
     this.attachHandlers();
   }
 
@@ -52,11 +68,18 @@ class Game extends HTMLElement {
     return ["data-command"];
   }
 
-  render() {
-    this.ctx.save();
-    this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
-    this.ctx.restore();
+  updateGame() {
     this.player.render(this.ctx);
+  }
+
+  updateMainMenu() {
+    this.menu.render(this.ctx);
+  }
+
+  render() {
+    setTimeout(this.render.bind(this), 1000 / 24);
+    this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+    this.updaters[this.state]();
   }
 }
 
