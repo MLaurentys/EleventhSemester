@@ -37,6 +37,7 @@ class AudioProcessor extends HTMLElement {
       });
     } catch (err) {
       console.log("app needs microphone permission: " + err);
+      return;
     }
     this.startAudioProcessing();
   }
