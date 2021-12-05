@@ -1,11 +1,10 @@
-import { NUM_BARS, BIN_FACTOR, PAD_FACTOR } from "../consts.js";
+import { NUM_BARS, BIN_FACTOR, PAD_FACTOR } from "../constants/consts.js";
 const template = document.createElement("template");
 template.innerHTML = `
 <link
   rel="stylesheet"
   href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css"
 />
-<style> </style>
 <canvas style="width:100%; height:100%"></canvas>
 `;
 

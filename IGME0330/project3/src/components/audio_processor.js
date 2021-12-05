@@ -5,7 +5,7 @@ import {
   NUM_BARS,
   BARS_TO_SKIP,
   binFreqRange,
-} from "../consts.js";
+} from "../constants/consts.js";
 
 const template = document.createElement("template");
 template.innerHTML = `
@@ -13,8 +13,6 @@ template.innerHTML = `
   rel="stylesheet"
   href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css"
 />
-<style>
-</style>
 <audio controls src="sounds/obama-oilspill.mp3"></audio>
 `;
 class AudioProcessor extends HTMLElement {
@@ -83,7 +81,7 @@ class AudioProcessor extends HTMLElement {
           detail: candidate[0],
         })
       );
-      this.commandDelay = 500;
+      this.commandDelay = 1500;
     } else {
       this.dispatchEvent(
         new CustomEvent("newCommand", {
@@ -92,7 +90,6 @@ class AudioProcessor extends HTMLElement {
           detail: "",
         })
       );
-      this.commandDelay = 500;
     }
   }
 

@@ -1,4 +1,4 @@
-import { HISTO_STEP, OFFSET, FFT_SIZE } from "../consts.js";
+import { HISTO_STEP, OFFSET, FFT_SIZE } from "../constants/consts.js";
 
 const template = document.createElement("template");
 template.innerHTML = `
@@ -6,8 +6,6 @@ template.innerHTML = `
   rel="stylesheet"
   href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css"
 />
-<style>
-</style>
 <audio controls src="sounds/obama-oilspill.mp3"></audio>
 `;
 class AudioProcessor extends HTMLElement {
