@@ -8,6 +8,7 @@ const template = `
     <div id="vanta"  style="width:100%; height:100%"> </div>
     <canvas style="width:100%; height:100%"></canvas>
     <img style="display:none" id="player-ship" src="../../images/ship.png" disabled>
+    <img style="display:none" id="bullet" src="../images/bullet.png" disabled>
     <div id="main-menu" class="menu-container">
       <img src="../images/title.png"/>
       <div id="input-selector" class="control">

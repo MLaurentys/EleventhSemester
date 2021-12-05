@@ -1,4 +1,5 @@
 import Player from "./game_objects/player.js";
+import Bullet from "./game_objects/bullet.js";
 import game_template from "../constants/templates/game_template.js";
 
 const GAME_STATE = Object.seal({
@@ -6,7 +7,6 @@ const GAME_STATE = Object.seal({
   TUTORIAL: 1,
   GAME: 2,
 });
-
 const template = document.createElement("template");
 template.innerHTML = game_template;
 
@@ -21,11 +21,15 @@ class Game extends HTMLElement {
     this.shadowRoot.appendChild(template.content.cloneNode(true));
     this.shoot = this.shoot.bind(this);
     this.canvas = this.shadowRoot.querySelector("canvas");
+    this.container = this.shadowRoot.querySelector("#game-container");
     this.menu = this.shadowRoot.querySelector("#main-menu");
     this.controls = this.shadowRoot.querySelector("#controls-menu");
     this.ctx = this.canvas.getContext("2d");
     this.state = GAME_STATE.MAIN_MENU;
     this.player_ship = this.shadowRoot.querySelector("#player-ship");
+    this.bulletEl = this.shadowRoot.querySelector("#bullet");
+    this.activeBullets = [];
+    this.asteroidGenerationTimer = 2;
     this.attachHandlers();
     this.startGame();
   }
@@ -45,7 +49,11 @@ class Game extends HTMLElement {
 
   disconnectedCallback() {}
 
-  shoot() {}
+  shoot() {
+    this.activeBullets.push(
+      new Bullet(this.bulletEl, this.ctx, this.player.yPos)
+    );
+  }
 
   attributeChangedCallback(name, _, newVal) {
     if (name === "data-command") {
@@ -81,6 +89,12 @@ class Game extends HTMLElement {
 
   updateGame(dt) {
     this.player.update(dt);
+    if (this.activeBullets[0]?.xPos > this.ctx.canvas.width)
+      this.activeBullets.shift();
+    this.activeBullets.forEach((bul) => {
+      bul.update(dt);
+      bul.render();
+    });
     this.player.render();
   }
 

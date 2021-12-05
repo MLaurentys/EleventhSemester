@@ -19,3 +19,6 @@ export const HIGH_START_POS = HISTO_STEP * START_HIGH - OFFSET;
 // Default mic volume threshold
 export const START_VOLUME = 50;
 export const binFreqRange = 48000 / FFT_SIZE;
+
+// game defaults
+export const playerX = 25;

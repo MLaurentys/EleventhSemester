@@ -4,6 +4,8 @@ const DESTINATION = Object.seal({
   BOTTOM: 2,
 });
 
+import { playerX } from "../../constants/consts.js";
+
 export default class Player {
   constructor(imgEl, ctx) {
     this.update = this.update.bind(this);
@@ -39,7 +41,6 @@ export default class Player {
       this.nextStance = DESTINATION.BOTTOM;
     else if (this.previousStance === DESTINATION.TOP)
       this.nextStance = DESTINATION.MIDDLE;
-    console.log(this.nextStance);
   }
 
   update(dt) {
@@ -47,7 +48,7 @@ export default class Player {
       ((this.stanceYPos[this.nextStance] -
         this.stanceYPos[this.previousStance]) *
         dt) /
-      1300; //finished in 1.3s (commands can be received agter 1.5s)
+      1300;
     if (Math.abs(this.stanceYPos[this.nextStance] - this.yPos) < 5)
       this.previousStance = this.nextStance;
   }
@@ -55,7 +56,7 @@ export default class Player {
   render() {
     this.ctx.drawImage(
       this.imgEl,
-      25,
+      playerX,
       this.yPos - this.width / 2,
       this.width,
       this.height
