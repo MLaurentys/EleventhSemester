@@ -16,11 +16,10 @@ export default class Bullet {
   }
 
   render() {
-    console.log(this.xPos);
     this.ctx.drawImage(
       this.imgEl,
       this.xPos,
-      this.yPos,
+      this.yPos - this.height / 2,
       this.width,
       this.height
     );

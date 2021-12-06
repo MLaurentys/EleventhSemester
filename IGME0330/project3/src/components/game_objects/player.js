@@ -17,6 +17,7 @@ export default class Player {
     };
     this.previousStance = DESTINATION.MIDDLE;
     this.nextStance = DESTINATION.MIDDLE;
+    this.xPos = playerX;
     this.yPos = this.stanceYPos[DESTINATION.MIDDLE];
     this.speed =
       this.stanceYPos[DESTINATION.MIDDLE] -
@@ -33,7 +34,6 @@ export default class Player {
       this.nextStance = DESTINATION.TOP;
     else if (this.previousStance === DESTINATION.BOTTOM)
       this.nextStance = DESTINATION.MIDDLE;
-    console.log(this.nextStance);
   }
 
   moveDown() {
@@ -56,7 +56,7 @@ export default class Player {
   render() {
     this.ctx.drawImage(
       this.imgEl,
-      playerX,
+      this.xPos,
       this.yPos - this.width / 2,
       this.width,
       this.height
