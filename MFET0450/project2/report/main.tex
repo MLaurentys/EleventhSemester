@@ -86,7 +86,7 @@
 	tabsize=4,
 	frame = single
 }
-
+\usepackage{blindtext}
 \makeatletter
 \renewcommand{\thesection}{%
 	\ifnum\c@chapter<1 \@arabic\c@section
@@ -131,8 +131,8 @@
     \input{sections/issues}
     
     \appendix
-    %\chapter{Specifications Sheet}
-    %\input{sections/appendix_A}
+    \chapter{Specifications Sheet}
+    \input{sections/appendix_A}
     
 
 \end{document}
