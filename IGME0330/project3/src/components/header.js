@@ -68,9 +68,12 @@ class Header extends HTMLElement {
   }
 
   setImages() {
-    VANTA.CLOUDS({
+    let vanta = VANTA.CLOUDS({
       el: this.shadowRoot.querySelector(".title-row"),
+      minHeight: 50,
+      minWidth: 50,
     });
+    setTimeout(() => vanta.resize(), 500);
     this.shadowRoot.querySelector("#logo").src = "../images/logo.jpg";
   }
 

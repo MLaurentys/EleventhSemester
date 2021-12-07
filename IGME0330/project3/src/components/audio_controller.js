@@ -9,7 +9,7 @@ import {
   HIGH_START_POS,
   HIGH_MIN,
   OFFSET,
-} from "../consts.js";
+} from "../constants/consts.js";
 
 const commands = {
   low: "U",

@@ -5,7 +5,7 @@ import {
   NUM_BARS,
   BARS_TO_SKIP,
   binFreqRange,
-} from "../consts.js";
+} from "../constants/consts.js";
 
 const template = document.createElement("template");
 template.innerHTML = `
@@ -13,8 +13,6 @@ template.innerHTML = `
   rel="stylesheet"
   href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css"
 />
-<style>
-</style>
 <audio controls src="sounds/obama-oilspill.mp3"></audio>
 `;
 class AudioProcessor extends HTMLElement {
@@ -32,6 +30,8 @@ class AudioProcessor extends HTMLElement {
   async startMicrophone() {
     try {
       this.audioStream = await navigator.mediaDevices.getUserMedia({
+        echoCancelation: true,
+        autoGainControl: false,
         audio: true,
         video: false,
       });
@@ -50,8 +50,6 @@ class AudioProcessor extends HTMLElement {
     this.analyserNode = this.ctx.createAnalyser();
     this.analyserNode.fftSize = FFT_SIZE;
     this.sourceNode.connect(this.analyserNode);
-    this.analyserNode.connect(this.ctx.destination);
-    console.log(this.ctx.sampleRate);
     this.data = new Uint8Array(this.analyserNode.frequencyBinCount);
     this.commandDelay = 0;
     this.audioLoop();
@@ -71,13 +69,6 @@ class AudioProcessor extends HTMLElement {
     for (let i = low; i < high; ++i) amtMed += Math.max(this.data[i] - vol, 0);
     for (let i = high; i < NUM_BARS + BARS_TO_SKIP; ++i)
       amtHigh += Math.max(this.data[i] - vol, 0);
-    // console.log(`LOW: [${BARS_TO_SKIP * binFreqRange}, ${binFreqRange * low}]`);
-    // console.log(`AVG: [${binFreqRange * low}, ${binFreqRange * high}]`);
-    // console.log(
-    //   `HIGH: [${binFreqRange * high}, ${
-    //     binFreqRange * (NUM_BARS + BARS_TO_SKIP)
-    //   }]`
-    // );
     let candidate = ["low", amtLow];
     if (amtMed > candidate[1]) candidate = ["avg", amtMed];
     if (amtHigh > candidate[1]) candidate = ["high", amtHigh];
@@ -90,7 +81,7 @@ class AudioProcessor extends HTMLElement {
           detail: candidate[0],
         })
       );
-      this.commandDelay = 500;
+      this.commandDelay = 1500;
     } else {
       this.dispatchEvent(
         new CustomEvent("newCommand", {
@@ -99,7 +90,6 @@ class AudioProcessor extends HTMLElement {
           detail: "",
         })
       );
-      this.commandDelay = 500;
     }
   }
 
